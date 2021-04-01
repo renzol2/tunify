@@ -32,11 +32,36 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/api/get", (require, response) => {
+app.get("/api/ping", (require, response) => {
+  response.send('pong');
+});
+
+app.get("/api/songs", (require, response) => {
     const sqlSelect = "SELECT * FROM Song LIMIT 15";
     db.query(sqlSelect, (err, result) => {
         response.send(result);
     });
+});
+
+app.get("/api/users", (require, response) => {
+  const sqlSelect = "SELECT * FROM User LIMIT 15";
+  db.query(sqlSelect, (err, result) => {
+      response.send(result);
+  });
+});
+
+app.get("/api/genres", (require, response) => {
+  const sqlSelect = "SELECT * FROM Genre LIMIT 15";
+  db.query(sqlSelect, (err, result) => {
+      response.send(result);
+  });
+});
+
+app.get("/api/artists", (require, response) => {
+  const sqlSelect = "SELECT * FROM Artist LIMIT 15";
+  db.query(sqlSelect, (err, result) => {
+      response.send(result);
+  });
 });
 
 // app.post("/api/insert", (require, response) => {
