@@ -32,36 +32,40 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/api/ping", (require, response) => {
-  response.send('pong');
+app.get("/api/ping", (req, response) => {
+    response.send('pong');
 });
 
-app.get("/api/songs", (require, response) => {
-    const sqlSelect = "SELECT * FROM Song LIMIT 15";
+app.get("/api/songs/:limit", (req, response) => {
+    const limit = req.params.limit;
+    const sqlSelect = `SELECT * FROM Song LIMIT ${limit}`;
     db.query(sqlSelect, (err, result) => {
         response.send(result);
     });
 });
 
-app.get("/api/users", (require, response) => {
-  const sqlSelect = "SELECT * FROM User LIMIT 15";
-  db.query(sqlSelect, (err, result) => {
-      response.send(result);
-  });
+app.get("/api/users/:limit", (req, response) => {
+    const limit = req.params.limit;
+    const sqlSelect = `SELECT * FROM User LIMIT ${limit}`;
+    db.query(sqlSelect, (err, result) => {
+        response.send(result);
+    });
 });
 
-app.get("/api/genres", (require, response) => {
-  const sqlSelect = "SELECT * FROM Genre LIMIT 15";
-  db.query(sqlSelect, (err, result) => {
-      response.send(result);
-  });
+app.get("/api/genres/:limit", (req, response) => {
+    const limit = req.params.limit;
+    const sqlSelect = `SELECT * FROM Genre LIMIT ${limit}`;
+    db.query(sqlSelect, (err, result) => {
+        response.send(result);
+    });
 });
 
-app.get("/api/artists", (require, response) => {
-  const sqlSelect = "SELECT * FROM Artist LIMIT 15";
-  db.query(sqlSelect, (err, result) => {
-      response.send(result);
-  });
+app.get("/api/artists/:limit", (req, response) => {
+    const limit = req.params.limit;
+    const sqlSelect = `SELECT * FROM Artist LIMIT ${limit}`;
+    db.query(sqlSelect, (err, result) => {
+        response.send(result);
+    });
 });
 
 // app.post("/api/insert", (require, response) => {
