@@ -85,7 +85,7 @@ app.get('/api/artists/:limit', (req, response) => {
       console.error(err);
       response.status(500).send(err);
     } else {
-      console.log(result);
+      console.log(`Success, sent ${result.length} artists`);
       response.status(200).send(result);
     }
   });
@@ -108,6 +108,31 @@ app.post('/api/artists/', (req, response) => {
       console.error(err);
       response.status(500).send(err);
     } else {
+      console.log(result);
+      response.status(200).send(result);
+    }
+  });
+});
+
+/**
+ * PUT /api/artists/:artistId
+ * Updates artist with given id
+ * Request body must have a `name` and `popularity`
+ */
+ app.put('/api/artists/:artistId', (req, response) => {
+  console.log('PUT /api/artists/:artistId invoked');
+  console.log(req.body);
+  const artistId = req.params.artistId;
+  const { name, popularity } = req.body;
+
+  const artistUpdateQuery =
+    'UPDATE `Artist` SET `name` = ?, `popularity` = ? WHERE `artist_id` = ? ';
+  db.query(artistUpdateQuery, [name, popularity, artistId], (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(`Artist ${artistId} successfully updated`)
       console.log(result);
       response.status(200).send(result);
     }

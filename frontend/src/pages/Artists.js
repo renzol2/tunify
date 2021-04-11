@@ -113,6 +113,7 @@ export default function Artists() {
             popularity={artist.popularity}
             bio={artist.bio}
             deleteArtist={deleteArtist}
+            fetchArtists={fetchArtists}
           />
         ))}
       </div>
