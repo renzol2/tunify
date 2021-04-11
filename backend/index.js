@@ -62,20 +62,37 @@ app.get('/api/genres/:limit', (req, response) => {
 });
 
 app.get('/api/artists/:limit', (req, response) => {
-  console.log('/api/artists/:limit invoked');
+  console.log('GET /api/artists/:limit invoked');
   const nameQuery = req.query.q;
   const limit = req.params.limit;
-  const sqlSelect = `
+  const artistSelectQuery = `
         SELECT * 
         FROM Artist 
         ${nameQuery === undefined ? '' : `WHERE name LIKE '%${nameQuery}%'`}
         ORDER BY popularity DESC
-        LIMIT ${limit}
+        ${Boolean(limit) && !isNaN(limit) ? `LIMIT ${limit}` : ''}
     `;
-  db.query(sqlSelect, (err, result) => {
+  db.query(artistSelectQuery, (err, result) => {
     if (err) {
       response.status(500).send(err);
     } else {
+      response.status(200).send(result);
+    }
+  });
+});
+
+app.post('/api/artists/', (req, response) => {
+  console.log('POST /api/artists/ invoked');
+  console.log(req.body);
+  const { name, popularity } = req.body;
+
+  const artistInsertQuery =
+    'INSERT INTO `Artist` (`name`, `popularity`) VALUES (?,?)';
+  db.query(artistInsertQuery, [name, popularity], (err, result) => {
+    if (err) {
+      response.status(500).send(err);
+    } else {
+      console.log(result);
       response.status(200).send(result);
     }
   });

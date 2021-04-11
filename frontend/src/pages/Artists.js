@@ -4,20 +4,30 @@ import Axios from 'axios';
 export default function Artists() {
   const [artistList, setArtistList] = useState([]);
   const [nameQuery, setNameQuery] = useState('');
-  const formRef = useRef(null);
+  const [artistName, setArtistName] = useState('');
+  const [artistPopularity, setArtistPopularity] = useState(0);
+  const searchFormRef = useRef(null);
+  const newArtistFormRef = useRef(null);
+  const limit = 50;
+  const ARTIST_ENDPOINT = 'http://localhost:3002/api/artists';
 
   function fetchArtists() {
     Axios.get(
-      `http://localhost:3002/api/artists/15?q=${nameQuery.replace(' ', '%20')}`
+      `${ARTIST_ENDPOINT}/${limit}?q=${nameQuery.replace(' ', '%20')}`
     ).then((response) => {
       setArtistList(response.data);
     });
   }
 
+  function submitNewArtist() {
+    Axios.post(`${ARTIST_ENDPOINT}`, {
+      name: artistName,
+      popularity: artistPopularity,
+    }).then((response) => {});
+  }
+
   useEffect(() => {
-    Axios.get(
-      `http://localhost:3002/api/artists/15`
-    ).then((response) => {
+    Axios.get(`${ARTIST_ENDPOINT}/${limit}`).then((response) => {
       setArtistList(response.data);
     });
   }, []);
@@ -30,14 +40,45 @@ export default function Artists() {
         textAlign: 'center',
       }}
     >
-      <h2>Artist List</h2>
+      <h2>Artists</h2>
 
+      <h3>Add new artist</h3>
       <form
-        ref={formRef}
+        ref={newArtistFormRef}
+        onSubmit={(e) => {
+          e.preventDefault();
+          submitNewArtist();
+          fetchArtists();
+          newArtistFormRef.current.reset();
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}
+        >
+          <label style={{ margin: 10 }}>Artist name</label>
+          <input type="text" onChange={(e) => setArtistName(e.target.value)} />
+          <label style={{ margin: 10 }}>Artist popularity</label>
+          <input
+            type="number"
+            onChange={(e) => setArtistPopularity(e.target.value)}
+          />
+        </div>
+        <input type="submit" style={{ margin: 10 }} />
+      </form>
+
+      {/* Search bar */}
+      <h3>Search artists</h3>
+      <form
+        ref={searchFormRef}
         onSubmit={(e) => {
           e.preventDefault();
           fetchArtists();
-          formRef.current.reset();
+          searchFormRef.current.reset();
         }}
       >
         <label style={{ padding: 10 }}>Search artist by name</label>
