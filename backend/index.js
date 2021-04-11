@@ -190,6 +190,31 @@ app.delete('/api/artists/:artistId', (req, response) => {
 	});
   });
 
+  /**
+ * PUT /api/users/:artistId
+ * Updates user with given id
+ * Request body must have a `first_name`, 'last_name', 'email', and `dob`
+ */
+ app.put('/api/users/:userId', (req, response) => {
+	console.log('PUT /api/users/:userId invoked');
+	console.log(req.body);
+	const userId = req.params.userId;
+	const { firstName, lastName, email, dob } = req.body;
+  
+	const userUpdateQuery =
+	  'UPDATE `User` SET `first_name` = ?, `last_name` = ?, `email` = ?, `dob` = ? WHERE `user_id` = ? ';
+	db.query(userUpdateQuery, [firstName, lastName, email, dob, userId], (err, result) => {
+	  if (err) {
+		console.error(err);
+		response.status(500).send(err);
+	  } else {
+		console.log(`User ${userId} successfully updated`)
+		console.log(result);
+		response.status(200).send(result);
+	  }
+	});
+  });
+
 
 // app.post("/api/insert", (require, response) => {
 //     const movieName = require.body.movieName;
