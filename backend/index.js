@@ -62,10 +62,13 @@ app.get('/api/genres/:limit', (req, response) => {
 });
 
 app.get('/api/artists/:limit', (req, response) => {
+  console.log('/api/artists/:limit invoked');
+  const nameQuery = req.query.q;
   const limit = req.params.limit;
   const sqlSelect = `
         SELECT * 
         FROM Artist 
+        ${nameQuery === undefined ? '' : `WHERE name LIKE '%${nameQuery}%'`}
         ORDER BY popularity DESC
         LIMIT ${limit}
     `;

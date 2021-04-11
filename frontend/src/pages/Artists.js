@@ -6,8 +6,18 @@ export default function Artists() {
   const [nameQuery, setNameQuery] = useState('');
   const formRef = useRef(null);
 
+  function fetchArtists() {
+    Axios.get(
+      `http://localhost:3002/api/artists/15?q=${nameQuery.replace(' ', '%20')}`
+    ).then((response) => {
+      setArtistList(response.data);
+    });
+  }
+
   useEffect(() => {
-    Axios.get('http://localhost:3002/api/artists/15').then((response) => {
+    Axios.get(
+      `http://localhost:3002/api/artists/15`
+    ).then((response) => {
       setArtistList(response.data);
     });
   }, []);
@@ -22,11 +32,14 @@ export default function Artists() {
     >
       <h2>Artist List</h2>
 
-      <form ref={formRef} onSubmit={(e) => {
-        e.preventDefault();
-        // TODO: send query
-        formRef.current.reset();
-      }}>
+      <form
+        ref={formRef}
+        onSubmit={(e) => {
+          e.preventDefault();
+          fetchArtists();
+          formRef.current.reset();
+        }}
+      >
         <label style={{ padding: 10 }}>Search artist by name</label>
         <input
           type="text"
