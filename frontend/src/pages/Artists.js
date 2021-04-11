@@ -26,6 +26,10 @@ export default function Artists() {
     }).then((response) => {});
   }
 
+  function deleteArtist(artistId) {
+    Axios.delete(`${ARTIST_ENDPOINT}/${artistId}`).then(fetchArtists);
+  }
+
   useEffect(() => {
     Axios.get(`${ARTIST_ENDPOINT}/${limit}`).then((response) => {
       setArtistList(response.data);
@@ -119,6 +123,12 @@ export default function Artists() {
               {artist.name} (ID: {artist.artist_id})
             </h4>
             <p>Popularity: {artist.popularity.toFixed(2)}</p>
+            <button
+              onClick={() => deleteArtist(artist.artist_id)}
+              style={{ backgroundColor: 'darkred', color: 'white' }}
+            >
+              Delete this artist
+            </button>
           </div>
         ))}
       </div>
