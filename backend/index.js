@@ -190,7 +190,7 @@ app.delete('/api/artists/:artistId', (req, response) => {
 	});
   });
 
-  /**
+/**
  * PUT /api/users/:artistId
  * Updates user with given id
  * Request body must have a `first_name`, 'last_name', 'email', and `dob`
@@ -215,6 +215,48 @@ app.delete('/api/artists/:artistId', (req, response) => {
 	});
   });
 
+/**
+ * POST /api/users
+ * Inserts user into User table using values in request body
+ * Request body must have a `first_name`, 'last_name', 'email', and 'dob'
+ */
+ app.post('/api/users/', (req, response) => {
+	console.log('POST /api/users/ invoked');
+	console.log(req.body);
+	const { firstName, lastName, email, dob } = req.body;
+  
+	const userInsertQuery =
+	  'INSERT INTO `User` (`first_name`, `last_name`, `email`, `dob`) VALUES (?,?,?,?)';
+	db.query(artistInsertQuery, [firstName, lastName, email, dob], (err, result) => {
+	  if (err) {
+		console.error(err);
+		response.status(500).send(err);
+	  } else {
+		console.log(result);
+		response.status(200).send(result);
+	  }
+	});
+  });
+
+/**
+ * DELETE /api/user/userId
+ * Deletes the user from User table with specified id
+ */
+app.delete('/api/users/:userId', (req, response) => {
+	console.log('DELETE /api/users/:userId invoked');
+	const userId = req.params.userId;
+  
+	const userDeleteQuery = 'DELETE FROM `User` WHERE `user_id`= ?';
+	db.query(userDeleteQuery, userId, (err, result) => {
+	  if (err) {
+		console.error(err);
+		response.status(500).send(err);
+	  } else {
+		console.log(result);
+		response.status(200).send(result);
+	  }
+	});
+  });
 
 // app.post("/api/insert", (require, response) => {
 //     const movieName = require.body.movieName;
