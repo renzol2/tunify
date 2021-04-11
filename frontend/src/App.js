@@ -1,9 +1,16 @@
 import './App.css';
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import Artists from './Artists';
+import Artists from './pages/Artists';
+import Songs from './pages/Songs';
 
 function App() {
+  // TODO: add new routes here
+  const routes = [
+    { route: '/artists', name: 'Artists', page: <Artists /> },
+    { route: '/songs', name: 'Songs', page: <Songs /> }
+  ];
+
   return (
     <Router>
       <div>
@@ -21,10 +28,12 @@ function App() {
             <Link to="/">
               <h1>Tunify</h1>
             </Link>
-            <div style={{ width: 'auto' }} />
-            <Link to="/artists">
-              <p>Artists</p>
-            </Link>
+            <div style={{ marginLeft: 'auto', marginRight: 'auto' }} />
+            {routes.map(({ route, name }) => (
+              <Link to={route} style={{ marginLeft: '3%' }}>
+                <p>{name}</p>
+              </Link>
+            ))}
           </nav>
         </div>
 
@@ -33,9 +42,11 @@ function App() {
           <Route exact path="/">
             <h2>Home</h2>
           </Route>
-          <Route path="/artists">
-            <Artists />
-          </Route>
+          {routes.map(({ route, page }) => (
+            <Route exact path={route}>
+              {page}
+            </Route>
+          ))}
         </Switch>
       </div>
     </Router>
