@@ -6,4 +6,4 @@ import Movies from './Movies';
 import Songs from './Songs';
 import Artists from './Artists';
 
-ReactDOM.render(<Artists />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));
