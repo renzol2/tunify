@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
+import ArtistCard from '../components/ArtistCard';
 
 export default function Artists() {
   const [artistList, setArtistList] = useState([]);
@@ -23,7 +24,10 @@ export default function Artists() {
     Axios.post(`${ARTIST_ENDPOINT}`, {
       name: artistName,
       popularity: artistPopularity,
-    }).then((response) => {});
+    }).then((response) => {
+      fetchArtists();
+      newArtistFormRef.current.reset();
+    });
   }
 
   function deleteArtist(artistId) {
@@ -52,8 +56,6 @@ export default function Artists() {
         onSubmit={(e) => {
           e.preventDefault();
           submitNewArtist();
-          fetchArtists();
-          newArtistFormRef.current.reset();
         }}
       >
         <div
@@ -104,32 +106,14 @@ export default function Artists() {
         }}
       >
         {artistList.map((artist) => (
-          // Artist individual component
-          <div
+          <ArtistCard
             key={artist.artist_id}
-            style={{
-              width: '40%',
-              paddingLeft: 'auto',
-              paddingRight: 'auto',
-              paddingBottom: 10,
-              margin: 5,
-              borderStyle: 'solid',
-              borderWidth: 0.2,
-              borderColor: 'black',
-              borderRadius: 30,
-            }}
-          >
-            <h4>
-              {artist.name} (ID: {artist.artist_id})
-            </h4>
-            <p>Popularity: {artist.popularity.toFixed(2)}</p>
-            <button
-              onClick={() => deleteArtist(artist.artist_id)}
-              style={{ backgroundColor: 'darkred', color: 'white' }}
-            >
-              Delete this artist
-            </button>
-          </div>
+            id={artist.artist_id}
+            name={artist.name}
+            popularity={artist.popularity}
+            bio={artist.bio}
+            deleteArtist={deleteArtist}
+          />
         ))}
       </div>
     </div>
