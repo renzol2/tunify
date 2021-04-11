@@ -4,8 +4,6 @@ const app = express();
 const mysql = require('mysql');
 const cors = require('cors');
 
-// This is a test commit for Owen :)
-
 var db = mysql.createConnection({
   host: '35.223.243.139',
   user: 'root',
@@ -158,6 +156,40 @@ app.delete('/api/artists/:artistId', (req, response) => {
     }
   });
 });
+
+/** GET, PUT, POST, DELETE for users */
+
+/**
+ * GET /api/users/:limit
+ * Returns array of users limited by the parameter
+ * ex. /api/users/30
+ * 
+ * Including a non-number as limit should(?) return ALL users
+ * ex. /api/users/all
+ */
+ app.get('/api/users/:limit', (req, response) => {
+	console.log('GET /api/users/:limit invoked');
+	const firstNameQuery = req.query.firstName;
+	const lastNameQuery = req.query.lastName;
+	const limit = req.params.limit;
+	const userSelectQuery = `
+		  SELECT * 
+		  FROM User 
+		  ${nameQuery === undefined ? '' : `WHERE first_name LIKE '%${firstNameQuery}%' AND last_name LIKE '%${lastNameQuery}%'`}
+		  ORDER BY first_name DESC
+		  ${Boolean(limit) && !isNaN(limit) ? `LIMIT ${limit}` : ''}
+	  `;
+	db.query(userSelectQuery, (err, result) => {
+	  if (err) {
+		console.error(err);
+		response.status(500).send(err);
+	  } else {
+		console.log(`Success, sent ${result.length} users`);
+		response.status(200).send(result);
+	  }
+	});
+  });
+
 
 // app.post("/api/insert", (require, response) => {
 //     const movieName = require.body.movieName;
