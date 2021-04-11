@@ -30,7 +30,7 @@ function App() {
             </Link>
             <div style={{ marginLeft: 'auto', marginRight: 'auto' }} />
             {routes.map(({ route, name }) => (
-              <Link to={route} style={{ marginLeft: '3%' }}>
+              <Link key={route} to={route} style={{ marginLeft: '3%' }}>
                 <p>{name}</p>
               </Link>
             ))}
@@ -43,7 +43,7 @@ function App() {
             <h2>Home</h2>
           </Route>
           {routes.map(({ route, page }) => (
-            <Route exact path={route}>
+            <Route exact path={route} key={route}>
               {page}
             </Route>
           ))}
