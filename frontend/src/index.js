@@ -2,11 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './App';
-import SongList from './SongList';
+import Movies from './Movies';
+import Songs from './Songs';
+import Artists from './Artists';
 
-
-ReactDOM.render(
-    <SongList />,
-  document.getElementById('root')
-);
-
+ReactDOM.render(<Artists />, document.getElementById('root'));

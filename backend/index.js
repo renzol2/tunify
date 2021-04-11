@@ -63,9 +63,18 @@ app.get("/api/genres/:limit", (req, response) => {
 
 app.get("/api/artists/:limit", (req, response) => {
     const limit = req.params.limit;
-    const sqlSelect = `SELECT * FROM Artist LIMIT ${limit}`;
+    const sqlSelect = `
+        SELECT * 
+        FROM Artist 
+        ORDER BY popularity DESC
+        LIMIT ${limit}
+    `;
     db.query(sqlSelect, (err, result) => {
-        response.send(result);
+        if (err) {
+            response.status(500).send(err);
+        } else {
+            response.status(200).send(result);
+        }
     });
 });
 

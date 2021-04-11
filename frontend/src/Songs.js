@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import Axios from 'axios';
 
-export default function SongList() {
+export default function Songs() {
     const [songList, setSongList] = useState([]);
 
     useEffect(() => {
@@ -14,7 +14,7 @@ export default function SongList() {
         <div>
             <h1>Song List</h1>
             <ul>
-                {songList.map((song) =>(
+                {songList.map((song) => (
                     <li>{song.name}</li>
                 ))}
             </ul>
