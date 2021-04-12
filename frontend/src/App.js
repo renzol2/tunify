@@ -5,10 +5,12 @@ import Artists from './pages/Artists';
 import Songs from './pages/Songs';
 import Users from './pages/Users';
 import Genres from './pages/Genres';
+import Queries from './pages/Queries';
 
 function App() {
   // TODO: add new routes here
   const routes = [
+    { route: '/queries', name: 'Queries', page: <Queries /> },
     { route: '/artists', name: 'Artists', page: <Artists /> },
     { route: '/songs', name: 'Songs', page: <Songs /> },
     { route: '/users', name: 'Users', page: <Users /> },
