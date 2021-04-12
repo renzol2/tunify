@@ -175,7 +175,6 @@ app.delete('/api/artists/:artistId', (req, response) => {
 	const userSelectQuery = `
 		  SELECT * 
 		  FROM User 
-		  ${nameQuery === undefined ? '' : `WHERE first_name LIKE '%${firstNameQuery}%' AND last_name LIKE '%${lastNameQuery}%'`}
 		  ORDER BY first_name DESC
 		  ${Boolean(limit) && !isNaN(limit) ? `LIMIT ${limit}` : ''}
 	  `;

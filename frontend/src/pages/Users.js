@@ -16,7 +16,7 @@ export default function Users() {
 
   function fetchUsers() {
     Axios.get(
-      `${USER_ENDPOINT}/${limit}?q=${nameQuery.replace(' ', '%20')}`
+      `${USER_ENDPOINT}/${limit}?firstName=${firstName.replace(' ', '%20')}&lastName=${lastName.replace(' ', '%20')}`
     ).then((response) => {
       setUserList(response.data);
     });

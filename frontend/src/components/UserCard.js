@@ -61,8 +61,8 @@ export default function UserCard({
       <h4>
         {} (ID: {id})
       </h4>
-      <p>First Name: {first_name.toFixed(2)}</p>
-	  <p>Last Name: {last_name.toFixed(2)}</p>
+      <p>First Name: {first_name}</p>
+	  <p>Last Name: {last_name}</p>
 
       {/* Form to update User */}
       <button
