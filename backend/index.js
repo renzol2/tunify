@@ -53,14 +53,6 @@ app.get('/api/users/:limit', (req, response) => {
   });
 });
 
-app.get('/api/genres/:limit', (req, response) => {
-  const limit = req.params.limit;
-  const sqlSelect = `SELECT * FROM Genre ORDER BY Genre.name ASC LIMIT ${limit}`;
-  db.query(sqlSelect, (err, result) => {
-    response.send(result);
-  });
-});
-
 /**
  * GET /api/artists/:limit
  * Returns array of artists limited by the parameter
@@ -160,7 +152,7 @@ app.delete('/api/artists/:artistId', (req, response) => {
 });
 
 
-// CREATE a new genre given a genre name
+// CREATES a new genre given a genre name
  app.post('/api/genres/', (req, response) => {
   console.log('POST /api/genres/ invoked: adding a new genre to table');
   console.log(req.body);
@@ -212,6 +204,30 @@ app.delete('/api/artists/:artistId', (req, response) => {
     } else {
       console.log(`Genre ${genreId} successfully updated`)
       console.log(result);
+      response.status(200).send(result);
+    }
+  });
+});
+
+// GETS a genre with the given genre name
+app.get('/api/genres/:limit', (req, response) => {
+  console.log('GET /api/genres/:limit invoked');
+  const nameQuery = req.query.q;
+  console.log("name of genre we want is ", nameQuery);
+  const limit = req.params.limit;
+  const genreSelectQuery = `
+        SELECT * 
+        FROM Genre 
+        ${nameQuery === undefined ? '' : `WHERE name LIKE '%${nameQuery}%'`}
+        ORDER BY Genre.name ASC
+        ${Boolean(limit) && !isNaN(limit) ? `LIMIT ${limit}` : ''}
+    `;
+  db.query(genreSelectQuery, (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(`Success, sent ${result.length} genres`);
       response.status(200).send(result);
     }
   });
