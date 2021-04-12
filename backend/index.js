@@ -55,7 +55,7 @@ app.get('/api/users/:limit', (req, response) => {
 
 app.get('/api/genres/:limit', (req, response) => {
   const limit = req.params.limit;
-  const sqlSelect = `SELECT * FROM Genre LIMIT ${limit}`;
+  const sqlSelect = `SELECT * FROM Genre ORDER BY Genre.name ASC LIMIT ${limit}`;
   db.query(sqlSelect, (err, result) => {
     response.send(result);
   });
@@ -149,6 +149,26 @@ app.delete('/api/artists/:artistId', (req, response) => {
 
   const artistDeleteQuery = 'DELETE FROM `Artist` WHERE `artist_id`= ?';
   db.query(artistDeleteQuery, artistId, (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(result);
+      response.status(200).send(result);
+    }
+  });
+});
+
+
+// CREATE a new genre given a genre name
+ app.post('/api/genres/', (req, response) => {
+  console.log('POST /api/genres/ invoked: adding a new genre to table');
+  console.log(req.body);
+  const name = req.body;
+
+  const genreInsertQuery =
+    'INSERT INTO `Genre` (`name`) VALUES (?)';
+  db.query(genreInsertQuery, name, (err, result) => {
     if (err) {
       console.error(err);
       response.status(500).send(err);

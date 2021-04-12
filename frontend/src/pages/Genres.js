@@ -3,9 +3,9 @@ import Axios from 'axios';
 import GenreCard from '../components/GenreCard';
 
 export default function Genres() {
-  const [GenreList, setGenreList] = useState([]);
+  const [genreList, setGenreList] = useState([]);
   const [nameQuery, setNameQuery] = useState('');
-  const [GenreName, setGenreName] = useState('');
+  const [genreName, setGenreName] = useState('');
   const searchFormRef = useRef(null);
   const newGenreFormRef = useRef(null);
   const limit = 50;
@@ -13,7 +13,7 @@ export default function Genres() {
 
   function fetchGenres() {
     Axios.get(
-      `${GENRE_ENDPOINT}/${limit}`
+      `${GENRE_ENDPOINT}/${limit}?q=${nameQuery.replace(' ', '%20')}`
     ).then((response) => {
       setGenreList(response.data);
     });
@@ -21,15 +21,15 @@ export default function Genres() {
 
   function submitNewGenre() {
     Axios.post(`${GENRE_ENDPOINT}`, {
-      name: GenreName,
+      name: genreName
     }).then((response) => {
       fetchGenres();
       newGenreFormRef.current.reset();
     });
   }
 
-  function deleteGenre(GenreId) {
-    Axios.delete(`${GENRE_ENDPOINT}/${GenreId}`).then(fetchGenres);
+  function deleteGenre(genreId) {
+    Axios.delete(`${GENRE_ENDPOINT}/${genreId}`).then(fetchGenres);
   }
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function Genres() {
     >
       <h2>Genres</h2>
 
-      <h3>Add new Genre</h3>
+      <h3>Create a Genre</h3>
       <form
         ref={newGenreFormRef}
         onSubmit={(e) => {
@@ -64,15 +64,14 @@ export default function Genres() {
             marginRight: 'auto',
           }}
         >
-          <label style={{ margin: 10 }}>Genre name</label>
+          <label style={{ margin: 10 }}>Name of Genre</label>
           <input type="text" onChange={(e) => setGenreName(e.target.value)} />
-
         </div>
         <input type="submit" style={{ margin: 10 }} />
       </form>
 
       {/* Search bar */}
-      <h3>Search Genres</h3>
+      <h3>Search for a Genre</h3>
       <form
         ref={searchFormRef}
         onSubmit={(e) => {
@@ -81,7 +80,7 @@ export default function Genres() {
           searchFormRef.current.reset();
         }}
       >
-        <label style={{ padding: 10 }}>Search genre by name</label>
+        <label style={{ padding: 10 }}>Input a Genre Name</label>
         <input
           type="text"
           id="search-name-input"
@@ -99,11 +98,11 @@ export default function Genres() {
           alignItems: 'center',
         }}
       >
-        {GenreList.map((Genre) => (
+        {genreList.map((genre) => (
           <GenreCard
-            key={Genre.genre_id}
-            id={Genre.genre_id}
-            name={Genre.name}
+            key={genre.genre_id}
+            id={genre.genre_id}
+            name={genre.name}
             deleteGenre={deleteGenre}
             fetchGenres={fetchGenres}
           />

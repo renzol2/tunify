@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import Axios from 'axios';
 
 /**
- * Individual card for each Genre on Genre page
+ * Individual card for each genre on Genre page
  * @param {{ 
  *  id: Number, 
  *  name: String, 
@@ -16,14 +16,14 @@ export default function GenreCard({
   deleteGenre,
   fetchGenres
 }) {
-  // State variables to update Genre with
+  // State variables to update genre with
   const [showForm, setShowForm] = useState(false);
   const [newName, setNewName] = useState(name);
   const updateFormRef = useRef(null);
-  const Genre_ENDPOINT = 'http://localhost:3002/api/genres';
+  const GENRE_ENDPOINT = 'http://localhost:3002/api/genres';
 
   function updateGenre() {
-    Axios.put(`${Genre_ENDPOINT}/${id}`, {
+    Axios.put(`${GENRE_ENDPOINT}/${id}`, {
       name: newName
     }).then((response) => {
       fetchGenres();
@@ -50,7 +50,7 @@ export default function GenreCard({
         {name} (ID: {id})
       </h4>
 
-      {/* Form to update Genre */}
+      {/* Form to update a genre */}
       <button
         onClick={() => setShowForm(!showForm)}
         style={{ borderRadius: 8 }}
@@ -80,7 +80,7 @@ export default function GenreCard({
 
       <br />
 
-      {/* Delete Genre button */}
+      {/* Delete genre button */}
       <div
         style={{
           display: 'flex',
@@ -96,7 +96,7 @@ export default function GenreCard({
             borderRadius: 8,
           }}
         >
-          Delete this Genre
+          Delete this genre
         </button>
       </div>
     </div>
