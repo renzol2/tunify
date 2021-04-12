@@ -38,10 +38,24 @@ app.get('/api/ping', (req, response) => {
 });
 
 app.get('/api/songs/:limit', (req, response) => {
+  console.log('GET /api/songs/:limit invoked');
+  const nameQuery = req.query.q;
   const limit = req.params.limit;
-  const sqlSelect = `SELECT * FROM Song LIMIT ${limit}`;
-  db.query(sqlSelect, (err, result) => {
-    response.send(result);
+  const songSelectQuery = `
+        SELECT * 
+        FROM Song 
+        ${nameQuery === undefined ? '' : `WHERE name LIKE '%${nameQuery}%'`}
+        ORDER BY name DESC
+        ${Boolean(limit) && !isNaN(limit) ? `LIMIT ${limit}` : ''}
+    `;
+  db.query(songSelectQuery, (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(`Success, sent ${result.length} songs`);
+      response.status(200).send(result);
+    }
   });
 });
 

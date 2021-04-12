@@ -57,9 +57,8 @@ export default function SongCard({
       <h4>
         {name} (ID: {id})
       </h4>
-      <p>Genre ID: {genre_id.toFixed(2)}</p>
-      <p>Artist ID: {artist_id.toFixed(2)}</p>
-      <p>Date: {date.toFixed(2)}</p>
+      <p>Duration: {duration.toFixed(2)}</p>
+      <p>Date: {date}</p>
 
 
       {/* Form to update artist */}
