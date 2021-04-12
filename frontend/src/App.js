@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import Artists from './pages/Artists';
 import Songs from './pages/Songs';
+import Users from './pages/Users';
 import Genres from './pages/Genres';
 
 function App() {
@@ -10,7 +11,8 @@ function App() {
   const routes = [
     { route: '/artists', name: 'Artists', page: <Artists /> },
     { route: '/songs', name: 'Songs', page: <Songs /> },
-    { route: '/genres', name: 'Genres', page: <Genres /> }
+    { route: '/users', name: 'Users', page: <Users /> },
+    { route: '/genres', name: 'Genres', page: <Genres /> },
   ];
 
   return (
