@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
 
 export default function Songs() {
@@ -69,16 +69,13 @@ export default function Songs() {
         >
           <label style={{ margin: 10 }}>Song name</label>
           <input type="text" onChange={(e) => setSongName(e.target.value)} />
-          <label style={{ margin: 10 }}>Genre id</label>
-          <input
-            type="number"
-            onChange={(e) => setGenreId(e.target.value)}
-          />
+
           <label style={{ margin: 10 }}>Duration</label>
           <input
             type="number"
             onChange={(e) => setDuration(e.target.value)}
           />
+
           <label style={{ margin: 10 }}>Song date</label>
           <input
             type="date"
@@ -116,7 +113,7 @@ export default function Songs() {
           alignItems: 'center',
         }}
       >
-        {songList.map((artist) => (
+        {songList.map((song) => (
           <SongCard
             key={song.song_id}
             id={song.song_id}
