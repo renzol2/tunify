@@ -64,15 +64,13 @@ export default function RunQueries() {
                 alignItems: 'center',
               }}
             >
-              {/* {responseList1.map((genre) => (
-                <GenreCard
-                  key={genre.genre_id}
-                  id={genre.genre_id}
-                  name={genre.name}
-                  deleteGenre={deleteGenre}
-                  fetchGenres={fetchGenres}
-                />
-              ))} */}
+              {responseList1.map((response) => (
+                <div key={response.name}>
+                  <h5>{response.first_name} {response.last_name}</h5>
+                  <p>{response.name}</p>
+                  <p>{response.dob}</p>
+                </div>
+              ))}
             </div>
           </div>
 
