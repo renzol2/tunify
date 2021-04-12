@@ -9,7 +9,7 @@ export default function Users() {
   const [userEmail, setUserEmail] = useState('');
   const [userDob, setUserDob] = useState(new Date());
   const [firstNameQuery, setFirstNameQuery] = useState('');
-  const [LastNameQuery, setLastNameQuery] = useState('');
+  const [lastNameQuery, setLastNameQuery] = useState('');
   const searchFormRef = useRef(null);
   const newUserFormRef = useRef(null);
   const limit = 50;
@@ -17,8 +17,12 @@ export default function Users() {
 
   function fetchUsers() {
     Axios.get(
-      `${USER_ENDPOINT}/${limit}?firstName=${firstName.replace(' ', '%20')}&lastName=${lastName.replace(' ', '%20')}`
+      `${USER_ENDPOINT}/${limit}?firstNameQuery=${firstNameQuery.replace(
+        ' ',
+        '%20'
+      )}&lastNameQuery=${lastNameQuery.replace(' ', '%20')}`
     ).then((response) => {
+      console.log(response.data);
       setUserList(response.data);
     });
   }
@@ -26,9 +30,9 @@ export default function Users() {
   function submitNewUser() {
     Axios.post(`${USER_ENDPOINT}`, {
       first_name: firstName,
-	  last_name: lastName,
-	  email: userEmail,
-	  dob: userDob
+      last_name: lastName,
+      email: userEmail,
+      dob: userDob,
     }).then((response) => {
       fetchUsers();
       newUserFormRef.current.reset();
@@ -73,11 +77,11 @@ export default function Users() {
         >
           <label style={{ margin: 10 }}>User first name</label>
           <input type="text" onChange={(e) => setFirstName(e.target.value)} />
-		  <label style={{ margin: 10 }}>User last name</label>
+          <label style={{ margin: 10 }}>User last name</label>
           <input type="text" onChange={(e) => setLastName(e.target.value)} />
-		  <label style={{ margin: 10 }}>User email</label>
+          <label style={{ margin: 10 }}>User email</label>
           <input type="text" onChange={(e) => setUserEmail(e.target.value)} />
-		  <label style={{ margin: 10 }}>User dob</label>
+          <label style={{ margin: 10 }}>User dob</label>
           <input type="date" onChange={(e) => setUserDob(e.target.value)} />
         </div>
         <input type="submit" style={{ margin: 10 }} />
@@ -93,13 +97,15 @@ export default function Users() {
           searchFormRef.current.reset();
         }}
       >
-        <label style={{ padding: 10 }}>Search user by first name, last name</label>
+        <label style={{ padding: 10 }}>
+          Search user by first name, last name
+        </label>
         <input
           type="text"
           id="search-name-input"
           onChange={(e) => setFirstNameQuery(e.target.value)}
         />
-		<input
+        <input
           type="text"
           id="search-name-input"
           onChange={(e) => setLastNameQuery(e.target.value)}
@@ -122,8 +128,8 @@ export default function Users() {
             id={user.user_id}
             first_name={user.first_name}
             last_name={user.last_name}
-			email={user.email}
-			dob={user.dob}
+            email={user.email}
+            dob={user.dob}
             deleteUser={deleteUser}
             fetchUsers={fetchUsers}
           />

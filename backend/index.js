@@ -43,14 +43,6 @@ app.get('/api/songs/:limit', (req, response) => {
   });
 });
 
-app.get('/api/users/:limit', (req, response) => {
-  const limit = req.params.limit;
-  const sqlSelect = `SELECT * FROM User LIMIT ${limit}`;
-  db.query(sqlSelect, (err, result) => {
-    response.send(result);
-  });
-});
-
 app.get('/api/genres/:limit', (req, response) => {
   const limit = req.params.limit;
   const sqlSelect = `SELECT * FROM Genre LIMIT ${limit}`;
@@ -63,7 +55,7 @@ app.get('/api/genres/:limit', (req, response) => {
  * GET /api/artists/:limit
  * Returns array of artists limited by the parameter
  * ex. /api/artists/30
- * 
+ *
  * Including a non-number as limit should(?) return ALL artists
  * ex. /api/artists/all
  */
@@ -117,7 +109,7 @@ app.post('/api/artists/', (req, response) => {
  * Updates artist with given id
  * Request body must have a `name` and `popularity`
  */
- app.put('/api/artists/:artistId', (req, response) => {
+app.put('/api/artists/:artistId', (req, response) => {
   console.log('PUT /api/artists/:artistId invoked');
   console.log(req.body);
   const artistId = req.params.artistId;
@@ -130,7 +122,7 @@ app.post('/api/artists/', (req, response) => {
       console.error(err);
       response.status(500).send(err);
     } else {
-      console.log(`Artist ${artistId} successfully updated`)
+      console.log(`Artist ${artistId} successfully updated`);
       console.log(result);
       response.status(200).send(result);
     }
@@ -163,100 +155,120 @@ app.delete('/api/artists/:artistId', (req, response) => {
  * GET /api/users/:limit
  * Returns array of users limited by the parameter
  * ex. /api/users/30
- * 
+ *
  * Including a non-number as limit should(?) return ALL users
  * ex. /api/users/all
  */
- app.get('/api/users/:limit', (req, response) => {
-	console.log('GET /api/users/:limit invoked');
-	const firstNameQuery = req.query.firstNameQuery;
-	const lastNameQuery = req.query.lastNameQuery;
-	const limit = req.params.limit;
-	const userSelectQuery = `
+app.get('/api/users/:limit', (req, response) => {
+  console.log('GET /api/users/:limit invoked');
+  const firstNameQuery = req.query.firstNameQuery;
+  const lastNameQuery = req.query.lastNameQuery;
+
+  let whereClause = '';
+  if (firstNameQuery !== undefined) {
+    whereClause += `WHERE first_name LIKE '%${firstNameQuery}%'`;
+  }
+  if (lastNameQuery !== undefined) {
+    whereClause += `${
+      Boolean(whereClause) ? 'AND' : 'WHERE'
+    } last_name LIKE '%${lastNameQuery}%'`;
+  }
+
+  const limit = req.params.limit;
+  const userSelectQuery = `
 		  SELECT * 
 		  FROM User 
-		  WHERE first_name LIKE '%${firstNameQuery}%' AND last_name LIKE '%${lastNameQuery}%
-		  ORDER BY first_name DESC'
+		  ${whereClause}
+		  ORDER BY dob DESC
 		  ${Boolean(limit) && !isNaN(limit) ? `LIMIT ${limit}` : ''}
 	  `;
-	db.query(userSelectQuery, (err, result) => {
-	  if (err) {
-		console.error(err);
-		response.status(500).send(err);
-	  } else {
-		console.log(`Success, sent ${result.length} users`);
-		response.status(200).send(result);
-	  }
-	});
+  console.log(userSelectQuery);
+  db.query(userSelectQuery, (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(`Success, sent ${result.length} users`);
+      response.status(200).send(result);
+    }
   });
+});
 
 /**
  * PUT /api/users/:artistId
  * Updates user with given id
  * Request body must have a `first_name`, 'last_name', 'email', and `dob`
  */
- app.put('/api/users/:userId', (req, response) => {
-	console.log('PUT /api/users/:userId invoked');
-	console.log(req.body);
-	const userId = req.params.userId;
-	const { firstName, lastName, email, dob } = req.body;
-  
-	const userUpdateQuery =
-	  'UPDATE `User` SET `first_name` = ?, `last_name` = ?, `email` = ?, `dob` = ? WHERE `user_id` = ? ';
-	db.query(userUpdateQuery, [firstName, lastName, email, dob, userId], (err, result) => {
-	  if (err) {
-		console.error(err);
-		response.status(500).send(err);
-	  } else {
-		console.log(`User ${userId} successfully updated`)
-		console.log(result);
-		response.status(200).send(result);
-	  }
-	});
-  });
+app.put('/api/users/:userId', (req, response) => {
+  console.log('PUT /api/users/:userId invoked');
+  console.log(req.body);
+  const userId = req.params.userId;
+  const { first_name: firstName, last_name: lastName, email, dob } = req.body;
+
+  const userUpdateQuery =
+    'UPDATE `User` SET `first_name` = ?, `last_name` = ?, `email` = ?, `dob` = ? WHERE `user_id` = ? ';
+  db.query(
+    userUpdateQuery,
+    [firstName, lastName, email, dob, userId],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        response.status(500).send(err);
+      } else {
+        console.log(`User ${userId} successfully updated`);
+        console.log(result);
+        response.status(200).send(result);
+      }
+    }
+  );
+});
 
 /**
  * POST /api/users
  * Inserts user into User table using values in request body
  * Request body must have a `first_name`, 'last_name', 'email', and 'dob'
  */
- app.post('/api/users/', (req, response) => {
-	console.log('POST /api/users/ invoked');
-	console.log(req.body);
-	const { firstName, lastName, email, dob } = req.body;
-  
-	const userInsertQuery =
-	  'INSERT INTO `User` (`first_name`, `last_name`, `email`, `dob`) VALUES (?,?,?,?)';
-	db.query(artistInsertQuery, [firstName, lastName, email, dob], (err, result) => {
-	  if (err) {
-		console.error(err);
-		response.status(500).send(err);
-	  } else {
-		console.log(result);
-		response.status(200).send(result);
-	  }
-	});
-  });
+app.post('/api/users/', (req, response) => {
+  console.log('POST /api/users/ invoked');
+  console.log(req.body);
+  const { first_name: firstName, last_name: lastName, email, dob } = req.body;
+
+  const userInsertQuery =
+    'INSERT INTO `User` (`first_name`, `last_name`, `email`, `dob`) VALUES (?,?,?,?)';
+  db.query(
+    userInsertQuery,
+    [firstName, lastName, email, dob],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        response.status(500).send(err);
+      } else {
+        console.log(result);
+        response.status(200).send(result);
+      }
+    }
+  );
+});
 
 /**
  * DELETE /api/user/userId
  * Deletes the user from User table with specified id
  */
 app.delete('/api/users/:userId', (req, response) => {
-	console.log('DELETE /api/users/:userId invoked');
-	const userId = req.params.userId;
-  
-	const userDeleteQuery = 'DELETE FROM `User` WHERE `user_id`= ?';
-	db.query(userDeleteQuery, userId, (err, result) => {
-	  if (err) {
-		console.error(err);
-		response.status(500).send(err);
-	  } else {
-		console.log(result);
-		response.status(200).send(result);
-	  }
-	});
+  console.log('DELETE /api/users/:userId invoked');
+  const userId = req.params.userId;
+
+  const userDeleteQuery = 'DELETE FROM `User` WHERE `user_id`= ?';
+  db.query(userDeleteQuery, userId, (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(result);
+      response.status(200).send(result);
+    }
   });
+});
 
 // app.post("/api/insert", (require, response) => {
 //     const movieName = require.body.movieName;
