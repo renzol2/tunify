@@ -413,6 +413,9 @@ app.get('/api/genres/:limit', (req, response) => {
   });
 });
 
+const advanced = require('./routes/advanced');
+app.use('/api/advanced', advanced);
+
 app.listen(3002, () => {
   console.log('running on port 3002');
 });
