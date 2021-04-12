@@ -13,19 +13,7 @@ var db = mysql.createConnection({
 
 db.connect(function (err) {
   if (err) throw err;
-  // var sql = "INSERT INTO `movie_reviews` (`id`,`movieName`, `movieReview`) VALUES (5,'inception', 'good movie');";
-  // db.query(sql, function (err, result) {
-  //   if (err) throw err;
-  //   console.log(result.affectedRows + " record(s) updated");
-  // });
 });
-
-// app.get('/', (require, response) => {
-//     const sqlInsert = "INSERT INTO `movie_reviews` (`movieName`, `movieReview`) VALUES ('Spider2', 'good movie');";
-//     db.query(sqlInsert, (err, result) => {
-//         response.send("Hello world!!!");
-//     })
-// })
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -33,22 +21,6 @@ app.use(express.json());
 
 app.get('/api/ping', (req, response) => {
   response.send('pong');
-});
-
-app.get('/api/songs/:limit', (req, response) => {
-  const limit = req.params.limit;
-  const sqlSelect = `SELECT * FROM Song LIMIT ${limit}`;
-  db.query(sqlSelect, (err, result) => {
-    response.send(result);
-  });
-});
-
-app.get('/api/genres/:limit', (req, response) => {
-  const limit = req.params.limit;
-  const sqlSelect = `SELECT * FROM Genre LIMIT ${limit}`;
-  db.query(sqlSelect, (err, result) => {
-    response.send(result);
-  });
 });
 
 /**
@@ -270,36 +242,85 @@ app.delete('/api/users/:userId', (req, response) => {
   });
 });
 
-// app.post("/api/insert", (require, response) => {
-//     const movieName = require.body.movieName;
-//     const movieReview = require.body.movieReview;
+// CREATES a new genre given a genre name
+app.post('/api/genres/', (req, response) => {
+  console.log('POST /api/genres/ invoked: adding a new genre to table');
+  console.log(req.body);
+  const { name } = req.body;
 
-//     const sqlInsert = "INSERT INTO `movie_reviews` (`movieName`, `movieReview`) VALUES (?,?)";
-//     db.query(sqlInsert, [movieName, movieReview], (err, result) => {
-//         console.log(error);
-//     })
-// });
+  const genreInsertQuery = 'INSERT INTO `Genre` (`name`) VALUES (?)';
+  db.query(genreInsertQuery, name, (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(result);
+      response.status(200).send(result);
+    }
+  });
+});
 
-// app.delete("/api/delete/:movieName", (require, response) => {
-//     const movieName = require.params.movieName;
+// REMOVES a genre with the given genreId
+app.delete('/api/genres/:genreId', (req, response) => {
+  console.log('DELETE /api/genres/:genreId invoked');
+  const genreId = req.params.genreId;
 
-//     const sqlDelete = "DELETE FROM `movie_reviews` WHERE `movieName`= ?";
-//     db.query(sqlDelete, movieName, (err, result) => {
-//         if (err)
-//         console.log(error);
-//     })
-// });
+  const genreDeleteQuery = 'DELETE FROM `Genre` WHERE `genre_id`= ?';
+  db.query(genreDeleteQuery, genreId, (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(result);
+      response.status(200).send(result);
+    }
+  });
+});
 
-// app.put("/api/update/", (require, response) => {
-//     const movieName = require.body.movieName;
-//     const movieReview = require.body.movieReview;
+// UPDATES a genre with the given genreId
+app.put('/api/genres/:genreId', (req, response) => {
+  console.log('PUT /api/genres/:genreId invoked');
+  console.log(req.body);
+  const genreId = req.params.genreId;
+  const { name } = req.body;
 
-//     const sqlUpdate = "UPDATE `movie_reviews` SET `movieReview` = ? WHERE `movieName`= ?";
-//     db.query(sqlUpdate, [movieReview,movieName ], (err, result) => {
-//         if (err)
-//         console.log(error);
-//     })
-// });
+  const genreUpdateQuery =
+    'UPDATE `Genre` SET `name` = ? WHERE `genre_id` = ? ';
+  db.query(genreUpdateQuery, [name, genreId], (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(`Genre ${genreId} successfully updated`);
+      console.log(result);
+      response.status(200).send(result);
+    }
+  });
+});
+
+// GETS a genre with the given genre name
+app.get('/api/genres/:limit', (req, response) => {
+  console.log('GET /api/genres/:limit invoked');
+  const nameQuery = req.query.q;
+  console.log('name of genre we want is ', nameQuery);
+  const limit = req.params.limit;
+  const genreSelectQuery = `
+        SELECT * 
+        FROM Genre 
+        ${nameQuery === undefined ? '' : `WHERE name LIKE '%${nameQuery}%'`}
+        ORDER BY Genre.name ASC
+        ${Boolean(limit) && !isNaN(limit) ? `LIMIT ${limit}` : ''}
+    `;
+  db.query(genreSelectQuery, (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(`Success, sent ${result.length} genres`);
+      response.status(200).send(result);
+    }
+  });
+});
 
 app.listen(3002, () => {
   console.log('running on port 3002');

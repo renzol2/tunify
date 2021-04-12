@@ -4,13 +4,15 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import Artists from './pages/Artists';
 import Songs from './pages/Songs';
 import Users from './pages/Users';
+import Genres from './pages/Genres';
 
 function App() {
   // TODO: add new routes here
   const routes = [
     { route: '/artists', name: 'Artists', page: <Artists /> },
     { route: '/songs', name: 'Songs', page: <Songs /> },
-	{ route: '/users', name: 'Users', page: <Users /> }
+    { route: '/users', name: 'Users', page: <Users /> },
+    { route: '/genres', name: 'Genres', page: <Genres /> },
   ];
 
   return (
