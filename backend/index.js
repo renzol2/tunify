@@ -179,6 +179,23 @@ app.delete('/api/artists/:artistId', (req, response) => {
   });
 });
 
+// REMOVES a genre with the given genreId
+ app.delete('/api/genres/:genreId', (req, response) => {
+  console.log('DELETE /api/genres/:genreId invoked');
+  const genreId = req.params.genreId;
+
+  const genreDeleteQuery = 'DELETE FROM `Genre` WHERE `genre_id`= ?';
+  db.query(genreDeleteQuery, genreId, (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(result);
+      response.status(200).send(result);
+    }
+  });
+});
+
 // app.post("/api/insert", (require, response) => {
 //     const movieName = require.body.movieName;
 //     const movieReview = require.body.movieReview;
