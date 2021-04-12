@@ -164,7 +164,7 @@ app.delete('/api/artists/:artistId', (req, response) => {
  app.post('/api/genres/', (req, response) => {
   console.log('POST /api/genres/ invoked: adding a new genre to table');
   console.log(req.body);
-  const name = req.body;
+  const {name} = req.body;
 
   const genreInsertQuery =
     'INSERT INTO `Genre` (`name`) VALUES (?)';
@@ -190,6 +190,27 @@ app.delete('/api/artists/:artistId', (req, response) => {
       console.error(err);
       response.status(500).send(err);
     } else {
+      console.log(result);
+      response.status(200).send(result);
+    }
+  });
+});
+
+// UPDATES a genre with the given genreId
+ app.put('/api/genres/:genreId', (req, response) => {
+  console.log('PUT /api/genres/:genreId invoked');
+  console.log(req.body);
+  const genreId = req.params.genreId;
+  const {name} = req.body;
+
+  const genreUpdateQuery =
+    'UPDATE `Genre` SET `name` = ? WHERE `genre_id` = ? ';
+  db.query(genreUpdateQuery, [name, genreId], (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(`Genre ${genreId} successfully updated`)
       console.log(result);
       response.status(200).send(result);
     }
