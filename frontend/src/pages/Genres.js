@@ -1,34 +1,40 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
+import GenreCard from '../components/GenreCard';
 
-export default function Artists() {
-  const [artistList, setArtistList] = useState([]);
+export default function Genres() {
+  const [GenreList, setGenreList] = useState([]);
   const [nameQuery, setNameQuery] = useState('');
-  const [artistName, setArtistName] = useState('');
-  const [artistPopularity, setArtistPopularity] = useState(0);
+  const [GenreName, setGenreName] = useState('');
   const searchFormRef = useRef(null);
-  const newArtistFormRef = useRef(null);
+  const newGenreFormRef = useRef(null);
   const limit = 50;
-  const ARTIST_ENDPOINT = 'http://localhost:3002/api/artists';
+  const GENRE_ENDPOINT = 'http://localhost:3002/api/genres';
 
-  function fetchArtists() {
+  function fetchGenres() {
     Axios.get(
-      `${ARTIST_ENDPOINT}/${limit}?q=${nameQuery.replace(' ', '%20')}`
+      `${GENRE_ENDPOINT}/${limit}`
     ).then((response) => {
-      setArtistList(response.data);
+      setGenreList(response.data);
     });
   }
 
-  function submitNewArtist() {
-    Axios.post(`${ARTIST_ENDPOINT}`, {
-      name: artistName,
-      popularity: artistPopularity,
-    }).then((response) => {});
+  function submitNewGenre() {
+    Axios.post(`${GENRE_ENDPOINT}`, {
+      name: GenreName,
+    }).then((response) => {
+      fetchGenres();
+      newGenreFormRef.current.reset();
+    });
+  }
+
+  function deleteGenre(GenreId) {
+    Axios.delete(`${GENRE_ENDPOINT}/${GenreId}`).then(fetchGenres);
   }
 
   useEffect(() => {
-    Axios.get(`${ARTIST_ENDPOINT}/${limit}`).then((response) => {
-      setArtistList(response.data);
+    Axios.get(`${GENRE_ENDPOINT}/${limit}`).then((response) => {
+      setGenreList(response.data);
     });
   }, []);
 
@@ -40,16 +46,14 @@ export default function Artists() {
         textAlign: 'center',
       }}
     >
-      <h2>Artists</h2>
+      <h2>Genres</h2>
 
-      <h3>Add new artist</h3>
+      <h3>Add new Genre</h3>
       <form
-        ref={newArtistFormRef}
+        ref={newGenreFormRef}
         onSubmit={(e) => {
           e.preventDefault();
-          submitNewArtist();
-          fetchArtists();
-          newArtistFormRef.current.reset();
+          submitNewGenre();
         }}
       >
         <div
@@ -60,28 +64,24 @@ export default function Artists() {
             marginRight: 'auto',
           }}
         >
-          <label style={{ margin: 10 }}>Artist name</label>
-          <input type="text" onChange={(e) => setArtistName(e.target.value)} />
-          <label style={{ margin: 10 }}>Artist popularity</label>
-          <input
-            type="number"
-            onChange={(e) => setArtistPopularity(e.target.value)}
-          />
+          <label style={{ margin: 10 }}>Genre name</label>
+          <input type="text" onChange={(e) => setGenreName(e.target.value)} />
+
         </div>
         <input type="submit" style={{ margin: 10 }} />
       </form>
 
       {/* Search bar */}
-      <h3>Search artists</h3>
+      <h3>Search Genres</h3>
       <form
         ref={searchFormRef}
         onSubmit={(e) => {
           e.preventDefault();
-          fetchArtists();
+          fetchGenres();
           searchFormRef.current.reset();
         }}
       >
-        <label style={{ padding: 10 }}>Search artist by name</label>
+        <label style={{ padding: 10 }}>Search genre by name</label>
         <input
           type="text"
           id="search-name-input"
@@ -90,7 +90,7 @@ export default function Artists() {
         <input type="submit" />
       </form>
 
-      {/* Artist list container */}
+      {/* Genre list container */}
       <div
         style={{
           width: '100%',
@@ -99,27 +99,14 @@ export default function Artists() {
           alignItems: 'center',
         }}
       >
-        {artistList.map((artist) => (
-          // Artist individual component
-          <div
-            key={artist.artist_id}
-            style={{
-              width: '40%',
-              paddingLeft: 'auto',
-              paddingRight: 'auto',
-              paddingBottom: 10,
-              margin: 5,
-              borderStyle: 'solid',
-              borderWidth: 0.2,
-              borderColor: 'black',
-              borderRadius: 30,
-            }}
-          >
-            <h4>
-              {artist.name} (ID: {artist.artist_id})
-            </h4>
-            <p>Popularity: {artist.popularity.toFixed(2)}</p>
-          </div>
+        {GenreList.map((Genre) => (
+          <GenreCard
+            key={Genre.genre_id}
+            id={Genre.genre_id}
+            name={Genre.name}
+            deleteGenre={deleteGenre}
+            fetchGenres={fetchGenres}
+          />
         ))}
       </div>
     </div>
