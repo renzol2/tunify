@@ -15,8 +15,7 @@ import Axios from 'axios';
 export default function SongCard({
   id,
   name,
-  genre_id,
-  artist_id,
+  duration,
   date,
   deleteSong,
   fetchSongs
@@ -24,8 +23,7 @@ export default function SongCard({
   // State variables to update artist with
   const [showForm, setShowForm] = useState(false);
   const [newName, setNewName] = useState(name);
-  const [newGenreId, setNewGenreId] = useState(genre_id);
-  const [newArtistId, setnewArtistId] = useState(artist_id);
+  const [newDuration, setNewDuration] = useState(duration);
   const [newDate, setNewDate] = useState(date);
   const updateFormRef = useRef(null);
   const SONG_ENDPOINT = 'http://localhost:3002/api/songs';
@@ -33,8 +31,7 @@ export default function SongCard({
   function updateSong() {
     Axios.put(`${SONG_ENDPOINT}/${id}`, {
         name: newName,
-        genre_id: newGenreId,
-        artist_id: newArtistId,
+        duration: newDuration,
         date: newDate,
     }).then((response) => {
       fetchSongs();
@@ -88,18 +85,10 @@ export default function SongCard({
 
           <br />
 
-          <label style={{ margin: 10 }}>Update genre ID</label>
+          <label style={{ margin: 10 }}>Update duration</label>
           <input
             type="number"
-            onChange={(e) => setNewGenreId(e.target.value)}
-          />
-
-          <br />
-
-          <label style={{ margin: 10 }}>Update artist ID</label>
-          <input
-            type="number"
-            onChange={(e) => setnewArtistId(e.target.value)}
+            onChange={(e) => setNewDuration(e.target.value)}
           />
 
           <br />

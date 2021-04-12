@@ -272,11 +272,11 @@ app.get('/api/genres/:limit', (req, response) => {
 app.post('/api/songs/', (req, response) => {
   console.log('POST /api/songs/ invoked: adding a new songs to table');
   console.log(req.body);
-  const {name, genre_id, artist_id, date} = req.body;
+  const {name, duration, date} = req.body;
 
   const songInsertQuery =
-    'INSERT INTO `Song` (`name`, `genre_id`, `artist_id`, `date`) VALUES (?, ?, ?, ?)';
-  db.query(songInsertQuery, [name, genre_id, artist_id, date], (err, result) => {
+    'INSERT INTO `Song` (`name`, `duration`, `date`) VALUES (?, ?, ?)';
+  db.query(songInsertQuery, [name, duration, date], (err, result) => {
     if (err) {
       console.error(err);
       response.status(500).send(err);
@@ -296,11 +296,11 @@ app.put('/api/songs/:songId', (req, response) => {
   console.log('PUT /api/songs/:songId invoked');
   console.log(req.body);
   const songId = req.params.songId;
-  const {name, genre_id, artist_id, date} = req.body;
+  const {name, duration, date} = req.body;
 
   const songUpdateQuery =
-    'UPDATE `Song` SET `name` = ?, `genre_id` = ?, `artist_id` = ?, `genre_id` = ?, WHERE `song_id` = ? ';
-  db.query(songUpdateQuery, [name, genre_id, artist_id, date, songId], (err, result) => {
+    'UPDATE `Song` SET `name` = ?, `duration` = ?, `date` = ?, WHERE `song_id` = ? ';
+  db.query(songUpdateQuery, [name, duration, date], (err, result) => {
     if (err) {
       console.error(err);
       response.status(500).send(err);

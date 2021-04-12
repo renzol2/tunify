@@ -5,8 +5,7 @@ export default function Songs() {
   const [songList, setSongList] = useState([]);
   const [nameQuery, setNameQuery] = useState('');
   const [songName, setSongName] = useState('');
-  const [genreId, setGenreId] = useState(0);
-  const [artistId, setArtistId] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [date, setDate] = useState(0);
   const searchFormRef = useRef(null);
   const newSongFormRef = useRef(null);
@@ -24,8 +23,7 @@ export default function Songs() {
   function submitNewSong() {
     Axios.post(`${SONG_ENDPOINT}`, {
       name: songName,
-      genre_id: genreId,
-      artist_id: artistId,
+      duration: duration,
       date: date,
     }).then((response) => {
       fetchSongs();
@@ -76,10 +74,10 @@ export default function Songs() {
             type="number"
             onChange={(e) => setGenreId(e.target.value)}
           />
-          <label style={{ margin: 10 }}>Artist id</label>
+          <label style={{ margin: 10 }}>Duration</label>
           <input
             type="number"
-            onChange={(e) => setArtistId(e.target.value)}
+            onChange={(e) => setDuration(e.target.value)}
           />
           <label style={{ margin: 10 }}>Song date</label>
           <input
@@ -121,10 +119,9 @@ export default function Songs() {
         {songList.map((artist) => (
           <SongCard
             key={song.song_id}
-            id={song.artist_id}
+            id={song.song_id}
             name={song.name}
-            genre_id={song.genre_id}
-            artist_id={song.artist_id}
+            duration={song.duration}
             date={song.date}
             deleteSong={deleteSong}
             fetchSongs={fetchSongs}
