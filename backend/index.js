@@ -169,13 +169,14 @@ app.delete('/api/artists/:artistId', (req, response) => {
  */
  app.get('/api/users/:limit', (req, response) => {
 	console.log('GET /api/users/:limit invoked');
-	const firstNameQuery = req.query.firstName;
-	const lastNameQuery = req.query.lastName;
+	const firstNameQuery = req.query.firstNameQuery;
+	const lastNameQuery = req.query.lastNameQuery;
 	const limit = req.params.limit;
 	const userSelectQuery = `
 		  SELECT * 
 		  FROM User 
-		  ORDER BY first_name DESC
+		  WHERE first_name LIKE '%${firstNameQuery}%' AND last_name LIKE '%${lastNameQuery}%
+		  ORDER BY first_name DESC'
 		  ${Boolean(limit) && !isNaN(limit) ? `LIMIT ${limit}` : ''}
 	  `;
 	db.query(userSelectQuery, (err, result) => {

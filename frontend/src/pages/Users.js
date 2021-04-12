@@ -4,11 +4,12 @@ import UserCard from '../components/UserCard';
 
 export default function Users() {
   const [userList, setUserList] = useState([]);
-  const [nameQuery, setNameQuery] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userDob, setUserDob] = useState(new Date());
+  const [firstNameQuery, setFirstNameQuery] = useState('');
+  const [LastNameQuery, setLastNameQuery] = useState('');
   const searchFormRef = useRef(null);
   const newUserFormRef = useRef(null);
   const limit = 50;
@@ -70,8 +71,14 @@ export default function Users() {
             marginRight: 'auto',
           }}
         >
-          <label style={{ margin: 10 }}>User name</label>
+          <label style={{ margin: 10 }}>User first name</label>
           <input type="text" onChange={(e) => setFirstName(e.target.value)} />
+		  <label style={{ margin: 10 }}>User last name</label>
+          <input type="text" onChange={(e) => setLastName(e.target.value)} />
+		  <label style={{ margin: 10 }}>User email</label>
+          <input type="text" onChange={(e) => setUserEmail(e.target.value)} />
+		  <label style={{ margin: 10 }}>User dob</label>
+          <input type="date" onChange={(e) => setUserDob(e.target.value)} />
         </div>
         <input type="submit" style={{ margin: 10 }} />
       </form>
@@ -86,11 +93,16 @@ export default function Users() {
           searchFormRef.current.reset();
         }}
       >
-        <label style={{ padding: 10 }}>Search artist by name</label>
+        <label style={{ padding: 10 }}>Search user by first name, last name</label>
         <input
           type="text"
           id="search-name-input"
-          onChange={(e) => setNameQuery(e.target.value)}
+          onChange={(e) => setFirstNameQuery(e.target.value)}
+        />
+		<input
+          type="text"
+          id="search-name-input"
+          onChange={(e) => setLastNameQuery(e.target.value)}
         />
         <input type="submit" />
       </form>
