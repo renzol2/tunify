@@ -313,8 +313,8 @@ app.put('/api/songs/:songId', (req, response) => {
   const {name, duration, date} = req.body;
 
   const songUpdateQuery =
-    'UPDATE `Song` SET `name` = ?, `duration` = ?, `date` = ?, WHERE `song_id` = ? ';
-  db.query(songUpdateQuery, [name, duration, date], (err, result) => {
+    'UPDATE `Song` SET `name` = ?, `duration` = ?, `date` = ? WHERE `song_id` = ? ';
+  db.query(songUpdateQuery, [name, duration, date, songId], (err, result) => {
     if (err) {
       console.error(err);
       response.status(500).send(err);
