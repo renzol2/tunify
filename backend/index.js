@@ -264,6 +264,74 @@ app.get('/api/genres/:limit', (req, response) => {
 //     })
 // });
 
+/**
+ * POST /api/songs
+ * Inserts song into Song table using values in request body
+ * Request body must have a `name`, `genre_id`, `artist_id`, `date`
+ */
+app.post('/api/songs/', (req, response) => {
+  console.log('POST /api/songs/ invoked: adding a new songs to table');
+  console.log(req.body);
+  const {name, genre_id, artist_id, date} = req.body;
+
+  const songInsertQuery =
+    'INSERT INTO `Song` (`name`, `genre_id`, `artist_id`, `date`) VALUES (?, ?, ?, ?)';
+  db.query(songInsertQuery, [name, genre_id, artist_id, date], (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(result);
+      response.status(200).send(result);
+    }
+  });
+});
+
+/**
+ * PUT /api/songs/:songId
+ * Updates song with given id
+ * Request body must have a `name`, `genre_id`, `artist_id`, `date`
+ */
+app.put('/api/songs/:songId', (req, response) => {
+  console.log('PUT /api/songs/:songId invoked');
+  console.log(req.body);
+  const songId = req.params.songId;
+  const {name, genre_id, artist_id, date} = req.body;
+
+  const songUpdateQuery =
+    'UPDATE `Song` SET `name` = ?, `genre_id` = ?, `artist_id` = ?, `genre_id` = ?, WHERE `song_id` = ? ';
+  db.query(songUpdateQuery, [name, genre_id, artist_id, date, songId], (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(`Song ${songId} successfully updated`)
+      console.log(result);
+      response.status(200).send(result);
+    }
+  });
+});
+
+/**
+ * DELETE /api/song/songId
+ * Deletes the song from Song table with specified id
+ */
+app.delete('/api/songs/:songId', (req, response) => {
+  console.log('DELETE /api/songs/:songId invoked');
+  const songId = req.params.songId;
+
+  const songDeleteQuery = 'DELETE FROM `Song` WHERE `song_id`= ?';
+  db.query(songDeleteQuery, songId, (err, result) => {
+    if (err) {
+      console.error(err);
+      response.status(500).send(err);
+    } else {
+      console.log(result);
+      response.status(200).send(result);
+    }
+  });
+});
+
 app.listen(3002, () => {
   console.log('running on port 3002');
 });
