@@ -16,12 +16,12 @@ routes.get('/:limit', (req, response) => {
 
   let whereClause = '';
   if (userIdQuery !== undefined) {
-    whereClause += `WHERE user_id LIKE '%${userIdQuery}%'`;
+    whereClause += `WHERE user_id LIKE '${userIdQuery}'`;
   }
   if (genreIdQuery !== undefined) {
     whereClause += `${
       Boolean(whereClause) ? 'AND' : 'WHERE'
-    } genre_id LIKE '%${genreIdQuery}%'`;
+    } genre_id LIKE '${genreIdQuery}'`;
   }
 
   const limit = req.params.limit;
@@ -74,15 +74,19 @@ routes.get('/:limit', (req, response) => {
 });
 
 /**
- * DELETE /api/user/userId
- * Deletes the user from User table with specified id
+ * DELETE /api/user_genre/userId
+ * Deletes the user-genre relation from UserGenre table with specified userId and genreId
  */
-routes.delete('/:userId', (req, response) => {
-  console.log('DELETE /api/users/:userId invoked');
+routes.delete('/:userGenreId', (req, response) => {
+  console.log('DELETE /api/user_genre/:userGenreId invoked');
   const userId = req.params.userId;
+  const genreId = req.params.genreId;
 
-  const userDeleteQuery = 'DELETE FROM `User` WHERE `user_id`= ?';
-  db.query(userDeleteQuery, userId, (err, result) => {
+  const userGenreDeleteQuery = 'DELETE FROM `UserGenre` WHERE `user_id`= ? AND `genre_id`= ?';
+  db.query(
+	  userGenreDeleteQuery, 
+	  [userId, genreId], 
+	  (err, result) => {
     if (err) {
       console.error(err);
       response.status(500).send(err);
