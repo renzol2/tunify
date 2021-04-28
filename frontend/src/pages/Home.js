@@ -8,7 +8,7 @@ export default function Home() {
     <Box w="100%">
       {/* Hero */}
       <Center minH="75vh" w="100%" bgGradient="linear(to-l, #7928CA, #FF0080)">
-        <VStack spacing={10}>
+        <VStack spacing={10} p="5%">
           {/* Title */}
           <Heading
             as="h2"
