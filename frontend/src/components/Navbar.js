@@ -3,15 +3,15 @@ import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
 import { Link } from 'react-router-dom';
 import { Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/menu';
 import { Button } from '@chakra-ui/button';
-import { ChevronDownIcon } from '@chakra-ui/icons'
+import { ChevronDownIcon } from '@chakra-ui/icons';
 
 /**
  * Navbar for Tunify
- * @param {{ 
- *  routes: Array<{ route: String, name: String, page: any }> 
+ * @param {{
+ *  routes: Array<{ route: String, name: String, page: any }>
  * }} navbarRoutes
- * @param {{ 
- *  routes: Array<{ route: String, name: String, page: any }> 
+ * @param {{
+ *  routes: Array<{ route: String, name: String, page: any }>
  * }} accountRoutes
  */
 export default function Navbar({ navbarRoutes, accountRoutes }) {
@@ -30,14 +30,19 @@ export default function Navbar({ navbarRoutes, accountRoutes }) {
           </Link>
         ))}
         <Menu>
-          <MenuButton ml={7} bgColor="pink.100" as={Button} rightIcon={<ChevronDownIcon />} >
+          <MenuButton
+            ml={7}
+            bgColor="pink.100"
+            as={Button}
+            rightIcon={<ChevronDownIcon />}
+          >
             Account
           </MenuButton>
           <MenuList>
-            {accountRoutes.map(({route, name}) => (
-              <MenuItem key={route}>
-                {name}
-              </MenuItem>
+            {accountRoutes.map(({ route, name }) => (
+              <Link to={route}>
+                <MenuItem key={route}>{name}</MenuItem>
+              </Link>
             ))}
           </MenuList>
         </Menu>
