@@ -12,7 +12,6 @@ import SignIn from './pages/account/SignIn';
 import SignUp from './pages/account/SignUp';
 
 function App() {
-  // TODO: add new routes here
   const NAVBAR_ROUTES = [
     { route: '/search', name: 'Search music', page: <SearchMusic /> },
     { route: '/matchmaking', name: 'Matchmaking', page: <Matchmaking /> },
@@ -23,8 +22,7 @@ function App() {
     { route: '/profile', name: 'Profile', page: <Profile /> },
     { route: '/sign-in', name: 'Sign in', page: <SignIn /> },
     { route: '/sign-up', name: 'Sign up', page: <SignUp /> }
-  ];
-
+  ]; 
   return (
     <Router>
       <Box>

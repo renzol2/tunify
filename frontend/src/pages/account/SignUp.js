@@ -18,6 +18,7 @@ import {
 import Footer from '../../components/Footer';
 import Client from '../../api/Client';
 import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 
 export default function SignUp() {
   const history = useHistory();
@@ -154,6 +155,13 @@ export default function SignUp() {
             <Button bgColor="pink.200" type="submit" disabled={isLoading}>
               {isLoading ? 'Loading...' : 'Sign up'}
             </Button>
+
+            <Text fontWeight="light">
+              Already have a Tunify account?{' '}
+              <Link to="/sign-in">
+                <strong>Sign in here.</strong>
+              </Link>
+            </Text>
           </VStack>
         </Center>
       </form>
