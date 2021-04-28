@@ -2,34 +2,34 @@ const routes = require('express').Router();
 const db = require('../db');
 
 /**
- * GET /api/user_song/:limit
- * Returns array of user_song relations limited by the parameter
- * ex. /api/user_song/30
+ * GET /api/user_artist/:limit
+ * Returns array of user_artist relations limited by the parameter
+ * ex. /api/user_artist/30
  *
- * Including a non-number as limit should(?) return ALL user-song relations
- * ex. /api/user_song/all
+ * Including a non-number as limit should(?) return ALL user-artist relations
+ * ex. /api/user_artist/all
  */
 routes.get('/:limit', (req, response) => {
-  console.log('GET /api/user_song/:limit invoked');
+  console.log('GET /api/user_artist/:limit invoked');
   const userIdQuery = req.query.userIdQuery;
-  const songIdQuery = req.query.songIdQuery;
+  const artistIdQuery = req.query.artistIdQuery;
 
   let whereClause = '';
   if (userIdQuery !== undefined) {
     whereClause += `WHERE user_id LIKE '${userIdQuery}'`;
   }
-  if (songIdQuery !== undefined) {
+  if (artistIdQuery !== undefined) {
     whereClause += `${
       Boolean(whereClause) ? 'AND' : 'WHERE'
-    } song_id LIKE '${songIdQuery}'`;
+    } artist_id LIKE '${artistIdQuery}'`;
   }
 
   const limit = req.params.limit;
   const selectQuery = `
 		  SELECT * 
-		  FROM UserSong 
+		  FROM UserArtist 
 		  ${whereClause}
-		  ORDER BY user_song_id DESC
+		  ORDER BY user_artist_id DESC
 		  ${Boolean(limit) && !isNaN(limit) ? `LIMIT ${limit}` : ''}
 	  `;
   
@@ -47,20 +47,20 @@ routes.get('/:limit', (req, response) => {
 
 
 /**
- * POST /api/user_song
- * Inserts user_song into UserSong table using values in request body
- * Request body must have a `userId` and 'songId'
+ * POST /api/user_artist
+ * Inserts user_artist into UserArtist table using values in request body
+ * Request body must have a `userId` and 'artistId'
  */
  routes.post('/', (req, response) => {
-  console.log('POST /api/user_song/ invoked');
+  console.log('POST /api/user_artist/ invoked');
   console.log(req.body);
-  const { user_id: userId, song_id: songId } = req.body;
+  const { user_id: userId, artist_id: artistId } = req.body;
 
-  const userSongInsertQuery =
-    'INSERT INTO `UserSong` (`user_id`, `song_id`) VALUES (?,?)';
+  const userArtistInsertQuery =
+    'INSERT INTO `UserArtist` (`user_id`, `artist_id`) VALUES (?,?)';
   db.query(
-    userSongInsertQuery,
-    [userId, SongId],
+    userArtistInsertQuery,
+    [userId, artistId],
     (err, result) => {
       if (err) {
         console.error(err);
@@ -74,22 +74,22 @@ routes.get('/:limit', (req, response) => {
 });
 
 /**
- * DELETE /api/user_song/
- * Deletes the user-song relation from UserSong table with specified userId and songId
+ * DELETE /api/user_artist/
+ * Deletes the user-artist relation from UserArtist table with specified userId and artistId
  */
 routes.delete('/', (req, response) => {
-  console.log('DELETE /api/user_song/ invoked');
+  console.log('DELETE /api/user_artist/ invoked');
   const userIdQuery = req.query.userIdQuery;
-  const songIdQuery = req.query.songIdQuery;
+  const artistIdQuery = req.query.artistIdQuery;
 
-  if (userIdQuery === undefined || songIdQuery === undefined) {
+  if (userIdQuery === undefined || artistIdQuery === undefined) {
 	  return response.status(500);
   }
 
-  const userSongDeleteQuery = 'DELETE FROM `UserSong` WHERE `user_id`= ? AND `song_id`= ?';
+  const userArtistDeleteQuery = 'DELETE FROM `UserArtist` WHERE `user_id`= ? AND `artist_id`= ?';
   db.query(
-	  userSongDeleteQuery, 
-	  [userIdQuery, songIdQuery], 
+	  userArtistDeleteQuery, 
+	  [userIdQuery, artistIdQuery], 
 	  (err, result) => {
     if (err) {
       console.error(err);
