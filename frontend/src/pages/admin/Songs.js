@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
-import SongCard from '../components/SongCard';
+import SongCard from '../../components/SongCard';
 
 
 export default function Songs() {

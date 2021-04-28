@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
 import { Link } from 'react-router-dom';
 import { Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/menu';
@@ -15,9 +15,18 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
  * }} accountRoutes
  */
 export default function Navbar({ navbarRoutes, accountRoutes }) {
+  const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    const userInfoString = localStorage.getItem('userInfo');
+    if (userInfoString !== null) {
+      setUserInfo(JSON.parse(userInfoString));
+    }
+  }, []);
+
   return (
     <Box w="100%">
-      <Flex w="auto" m={6} justifyContent="space-between">
+      <Flex w="auto" p={6} justifyContent="space-between">
         <Link to="/">
           <Heading as="h1" fontWeight="black">
             Tunify
@@ -36,11 +45,11 @@ export default function Navbar({ navbarRoutes, accountRoutes }) {
             as={Button}
             rightIcon={<ChevronDownIcon />}
           >
-            Account
+            {Boolean(userInfo) ? userInfo.first_name : 'Account'}
           </MenuButton>
           <MenuList>
             {accountRoutes.map(({ route, name }) => (
-              <Link to={route}>
+              <Link key={route} to={route}>
                 <MenuItem key={route}>{name}</MenuItem>
               </Link>
             ))}

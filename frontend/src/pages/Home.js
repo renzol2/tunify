@@ -8,9 +8,15 @@ export default function Home() {
     <Box w="100%">
       {/* Hero */}
       <Center minH="75vh" w="100%" bgGradient="linear(to-l, #7928CA, #FF0080)">
-        <VStack spacing={10}>
+        <VStack spacing={10} p="5%">
           {/* Title */}
-          <Heading as="h2" fontSize="6xl" color="white" fontWeight="black">
+          <Heading
+            as="h2"
+            fontSize="6xl"
+            color="white"
+            fontWeight="black"
+            textShadow="4px 4px #000000"
+          >
             Find your match through the music you love.
           </Heading>
 

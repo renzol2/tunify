@@ -3,7 +3,7 @@ import React from 'react';
 
 export default function Footer() {
   return (
-    <Center minH="40vh" bgColor="black">
+    <Center minH="30vh" bgColor="black">
       <Heading as="h3" fontSize="xl" fontWeight="100" color="gray">
         © 2021 Tunify
       </Heading>

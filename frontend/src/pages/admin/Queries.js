@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import '../Queries.css';
+import './Queries.css';
 import Axios from 'axios';
 
 export default function RunQueries() {
