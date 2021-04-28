@@ -1,60 +1,48 @@
 import './App.css';
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import Artists from './pages/Artists';
-import Songs from './pages/Songs';
-import Users from './pages/Users';
-import Genres from './pages/Genres';
-import Queries from './pages/Queries';
+import { Box } from '@chakra-ui/react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Navbar from './components/Navbar';
+import SearchMusic from './pages/SearchMusic';
+import Matchmaking from './pages/Matchmaking';
+import Admin from './pages/Admin';
+import Profile from './pages/account/Profile';
+import SignIn from './pages/account/SignIn';
+import SignUp from './pages/account/SignUp';
 
 function App() {
   // TODO: add new routes here
-  const routes = [
-    { route: '/queries', name: 'Queries', page: <Queries /> },
-    { route: '/artists', name: 'Artists', page: <Artists /> },
-    { route: '/songs', name: 'Songs', page: <Songs /> },
-    { route: '/users', name: 'Users', page: <Users /> },
-    { route: '/genres', name: 'Genres', page: <Genres /> },
+  const NAVBAR_ROUTES = [
+    { route: '/search', name: 'Search music', page: <SearchMusic /> },
+    { route: '/matchmaking', name: 'Matchmaking', page: <Matchmaking /> },
+    { route: '/admin', name: 'Admin', page: <Admin /> },
+  ];
+
+  const ACCOUNT_ROUTES = [
+    { route: '/profile', name: 'Profile', page: <Profile /> },
+    { route: '/sign-in', name: 'Sign in', page: <SignIn /> },
+    { route: '/sign-up', name: 'Sign up', page: <SignUp /> }
   ];
 
   return (
     <Router>
-      <div>
+      <Box>
         {/* Nav bar */}
-        <div style={{ width: '100%' }}>
-          <nav
-            style={{
-              width: 'auto',
-              paddingLeft: 15,
-              paddingRight: 15,
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Link to="/">
-              <h1>Tunify</h1>
-            </Link>
-            <div style={{ marginLeft: 'auto', marginRight: 'auto' }} />
-            {routes.map(({ route, name }) => (
-              <Link key={route} to={route} style={{ marginLeft: '3%' }}>
-                <p>{name}</p>
-              </Link>
-            ))}
-          </nav>
-        </div>
+        <Navbar navbarRoutes={NAVBAR_ROUTES} accountRoutes={ACCOUNT_ROUTES} />
 
         {/* Routes */}
         <Switch>
           <Route exact path="/">
-            <h2>Home</h2>
+            <Home />
           </Route>
-          {routes.map(({ route, page }) => (
+          {[...NAVBAR_ROUTES, ...ACCOUNT_ROUTES].map(({ route, page }) => (
             <Route exact path={route} key={route}>
               {page}
             </Route>
           ))}
         </Switch>
-      </div>
+      </Box>
     </Router>
   );
 }
