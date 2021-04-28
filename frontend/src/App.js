@@ -6,7 +6,7 @@ import Home from './pages/Home';
 import Navbar from './components/Navbar';
 import SearchMusic from './pages/SearchMusic';
 import Matchmaking from './pages/Matchmaking';
-import Admin from './pages/Admin';
+import Admin from './pages/admin/Admin';
 import Profile from './pages/account/Profile';
 import SignIn from './pages/account/SignIn';
 import SignUp from './pages/account/SignUp';
