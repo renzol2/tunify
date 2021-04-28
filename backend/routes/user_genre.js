@@ -77,15 +77,19 @@ routes.get('/:limit', (req, response) => {
  * DELETE /api/user_genre/userId
  * Deletes the user-genre relation from UserGenre table with specified userId and genreId
  */
-routes.delete('/:userGenreId', (req, response) => {
-  console.log('DELETE /api/user_genre/:userGenreId invoked');
-  const userId = req.params.userId;
-  const genreId = req.params.genreId;
+routes.delete('/', (req, response) => {
+  console.log('DELETE /api/user_genre/ invoked');
+  const userIdQuery = req.query.userIdQuery;
+  const genreIdQuery = req.query.genreIdQuery;
+
+  if (userIdQuery === undefined || genreIdQuery === undefined) {
+	  return response.status(500);
+  }
 
   const userGenreDeleteQuery = 'DELETE FROM `UserGenre` WHERE `user_id`= ? AND `genre_id`= ?';
   db.query(
 	  userGenreDeleteQuery, 
-	  [userId, genreId], 
+	  [userIdQuery, genreIdQuery], 
 	  (err, result) => {
     if (err) {
       console.error(err);
