@@ -12,6 +12,7 @@ import {
   Heading,
   Input,
   Text,
+  useToast,
   VStack,
 } from '@chakra-ui/react';
 import Footer from '../../components/Footer';
@@ -20,9 +21,10 @@ import { useHistory } from 'react-router';
 
 export default function SignUp() {
   const history = useHistory();
+  const signUpFormRef = useRef(null);
+  const toast = useToast();
   const [isLoading, setLoading] = useState(false);
   const [showError, setShowError] = useState(false);
-  const signUpFormRef = useRef(null);
 
   useEffect(() => {
     // If the user is already logged in
@@ -30,13 +32,13 @@ export default function SignUp() {
       // Redirect them to the profile page
       history.push('/profile');
     }
-  }, [history])
+  }, [history]);
 
   /**
    * Submits sign up info to API
    * @param {React.FormEvent<HTMLFormElement>} e
    */
-  function submitSignUpInfo(e) {
+  async function submitSignUpInfo(e) {
     e.preventDefault();
     setLoading(true);
     setShowError(false);
@@ -47,10 +49,33 @@ export default function SignUp() {
       email: e.target[2].value,
     };
 
-    console.log(signupInfo);
+    // Check that email has no spaces
+    if (signupInfo.email.includes(' ')) {
+      toast({
+        title: 'Error',
+        description: 'Email cannot contain spaces.',
+        status: 'error',
+      });
+      setLoading(false);
+      return;
+    }
 
-    // TODO: Rest of the sign up flow
-    // Send POST request to create user in database
+    // Check if email already exists
+    let emailsResponse = await Client.get(
+      `users/1?emailQuery=${signupInfo.email}`
+    );
+
+    if (emailsResponse.data.length > 0) {
+      toast({
+        title: 'Error',
+        description: 'User with that email already exists.',
+        status: 'error',
+      });
+      setLoading(false);
+      return;
+    }
+
+    // Once everything's valid, send POST request to create user in database
     Client.post('users', signupInfo)
       .then((response) => {
         // If successful, log in the user and redirect to profile page
