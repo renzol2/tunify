@@ -1,12 +1,13 @@
 import './App.css';
 import React from 'react';
-import { Box, Flex, Heading } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import Artists from './pages/Artists';
 import Songs from './pages/Songs';
 import Users from './pages/Users';
 import Genres from './pages/Genres';
 import Queries from './pages/Queries';
+import Home from './pages/Home';
 
 function App() {
   // TODO: add new routes here
@@ -23,14 +24,14 @@ function App() {
       <Box>
         {/* Nav bar */}
         <Box w="100%">
-          <Flex w="auto" p={30} justifyContent="space-between">
+          <Flex w="auto" m={6} justifyContent="space-between">
             <Link to="/">
-              <Heading as="h1">Tunify</Heading>
+              <Heading as="h1" fontWeight="black">Tunify</Heading>
             </Link>
             <Box ml="auto" mr="auto" />
             {routes.map(({ route, name }) => (
               <Link key={route} to={route} style={{ marginLeft: '3%' }}>
-                <p>{name}</p>
+                <Text mt={2}>{name}</Text>
               </Link>
             ))}
           </Flex>
@@ -39,7 +40,7 @@ function App() {
         {/* Routes */}
         <Switch>
           <Route exact path="/">
-            <Heading as="h2">Home</Heading>
+            <Home />
           </Route>
           {routes.map(({ route, page }) => (
             <Route exact path={route} key={route}>
