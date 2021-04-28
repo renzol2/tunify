@@ -16,12 +16,12 @@ const db = require('../db');
   
 	let whereClause = '';
 	if (artistIdQuery !== undefined) {
-	  whereClause += `WHERE artist_id LIKE '%${artistIdQuery}%'`;
+	  whereClause += `WHERE artist_id LIKE '${artistIdQuery}'`;
 	}
 	if (genreIdQuery !== undefined) {
 	  whereClause += `${
 		Boolean(whereClause) ? 'AND' : 'WHERE'
-	  } genre_id LIKE '%${genreIdQuery}%'`;
+	  } genre_id LIKE '${genreIdQuery}'`;
 	}
   
 	const limit = req.params.limit;
