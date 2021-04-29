@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Divider,
@@ -16,12 +16,15 @@ import Footer from '../components/Footer';
 import ArtistCard from '../components/search/ArtistCard';
 import GenreCard from '../components/search/GenreCard';
 import SongCard from '../components/search/SongCard';
+import useUserInfo from '../hooks/useUserInfo';
 
 export default function SearchMusic() {
   const LIMIT = 50; // FIXME: make limit changeable
+  const [userInfo] = useUserInfo();
   const [isLoading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
   const [artists, setArtists] = useState([]);
+  const [likedArtists, setLikedArtists] = useState([]);
   const [genres, setGenres] = useState([]);
   const [songs, setSongs] = useState([]);
   const [isInitial, setInitial] = useState(true);

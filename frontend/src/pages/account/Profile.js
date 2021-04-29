@@ -17,20 +17,12 @@ import {
 } from '@chakra-ui/react';
 import { useHistory } from 'react-router';
 import Footer from '../../components/Footer';
+import useUserInfo from '../../hooks/useUserInfo';
 
 export default function Profile() {
   const history = useHistory();
-  const [userInfo, setUserInfo] = useState(null);
+  const [userInfo] = useUserInfo();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  useEffect(() => {
-    const userInfoString = localStorage.getItem('userInfo');
-    if (userInfoString !== null) {
-      setUserInfo(JSON.parse(userInfoString));
-    } else {
-      history.push('/sign-in');
-    }
-  }, [history]);
 
   function signOut() {
     localStorage.removeItem('userInfo');

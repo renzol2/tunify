@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Box, Center, Flex, Text, VStack } from '@chakra-ui/layout';
+import { Box, Center, Flex, Text } from '@chakra-ui/layout';
 import { IconButton } from '@chakra-ui/button';
 import { AddIcon, CheckCircleIcon } from '@chakra-ui/icons';
 
