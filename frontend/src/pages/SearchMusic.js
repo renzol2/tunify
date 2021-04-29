@@ -7,6 +7,7 @@ import {
   InputGroup,
   InputLeftElement,
   SimpleGrid,
+  Spinner,
   Text,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
@@ -20,12 +21,14 @@ export default function SearchMusic() {
   const [artists, setArtists] = useState([]);
   const [genres, setGenres] = useState([]);
   const [songs, setSongs] = useState([]);
+  const [isInitial, setInitial] = useState(true);
 
   /**
    * Fetches search results into state
    * @param {React.FormEvent<HTMLFormElement>} e
    */
   function getSearchResults(e) {
+    setInitial(false);
     e.preventDefault();
     console.log(e);
 
@@ -62,9 +65,15 @@ export default function SearchMusic() {
         </form>
 
         <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="2%">
-          Artists
+          Artists{' '}
+          <Text fontWeight="light" fontSize="lg">
+            {artists.length} results found.
+          </Text>
         </Heading>
         <Divider my={2} />
+        {isLoading && <Spinner />}
+        {isInitial && <Text>Search to find your favorite artists!</Text>}
+        {!isInitial && artists.length === 0 && <Text>No artists found.</Text>}
         <SimpleGrid columns={3} spacing={5}>
           {artists.map((artist) => (
             <Text key={artist.artist_id}>{artist.name}</Text>
@@ -73,8 +82,14 @@ export default function SearchMusic() {
 
         <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="2%">
           Genres
+          <Text fontWeight="light" fontSize="lg">
+            {genres.length} results found.
+          </Text>
         </Heading>
         <Divider my={2} />
+        {isLoading && <Spinner />}
+        {isInitial && <Text>Search to find your favorite genres!</Text>}
+        {!isInitial && genres.length === 0 && <Text>No genres found.</Text>}
         <SimpleGrid columns={3} spacing={5}>
           {genres.map((genre) => (
             <Text key={genre.genre_id}>{genre.name}</Text>
@@ -83,8 +98,14 @@ export default function SearchMusic() {
 
         <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="2%">
           Songs
+          <Text fontWeight="light" fontSize="lg">
+            {songs.length} results found.
+          </Text>
         </Heading>
         <Divider my={2} />
+        {isLoading && <Spinner />}
+        {isInitial && <Text>Search to find your favorite songs!</Text>}
+        {!isInitial && songs.length === 0 && <Text>No songs found.</Text>}
         <SimpleGrid columns={3} spacing={5}>
           {songs.map((song) => (
             <Text key={song.song_id}>{song.name}</Text>
