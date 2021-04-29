@@ -83,7 +83,7 @@ routes.delete('/', (req, response) => {
   const songIdQuery = req.query.songIdQuery;
 
   if (userIdQuery === undefined || songIdQuery === undefined) {
-	  return response.status(500);
+	  return response.status(500).send();
   }
 
   const userSongDeleteQuery = 'DELETE FROM `UserSong` WHERE `user_id`= ? AND `song_id`= ?';

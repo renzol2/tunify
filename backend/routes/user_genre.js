@@ -83,7 +83,7 @@ routes.delete('/', (req, response) => {
   const genreIdQuery = req.query.genreIdQuery;
 
   if (userIdQuery === undefined || genreIdQuery === undefined) {
-	  return response.status(500);
+	  return response.status(500).send();
   }
 
   const userGenreDeleteQuery = 'DELETE FROM `UserGenre` WHERE `user_id`= ? AND `genre_id`= ?';
