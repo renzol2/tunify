@@ -113,19 +113,41 @@ routes.get('/UserSong/:limit/:userId', (req, response) => {
   
 });
 
-/**
- * POST /api/songs
- * Inserts song into Song table using values in request body
- * Request body must have a `name`, `genre_id`, `artist_id`, `date`
- */
-routes.post('/', (req, response) => {
-  console.log('POST /api/songs/ invoked: adding a new songs to table');
-  console.log(req.body);
-  const {name, duration, date} = req.body;
 
-  const songInsertQuery =
-    'INSERT INTO `Song` (`name`, `duration`, `date`) VALUES (?, ?, ?)';
-  db.query(songInsertQuery, [name, duration, date], (err, result) => {
+/**
+ * Calls a stored procedure that runs three advanced queries to find the 
+ * shared "liked" songs, artists, and genres between two users
+ *
+ * This creates and returns THREE different tables (the result of three select statements in one procedure)
+ * 1) SharedArtists (has one column, "artisto")
+ * 2) SharedGenres (has one column, "genreo")
+ * 3) SharedSongs (has one column, "songo")
+ */
+   routes.get('/UserArtist/:limit/:userId1/:userId2', (req, response) => {
+    console.log('GET /:UserArtist:limit:userId:userId2 invoked');
+    const userId1 = req.params.userId1;
+    const userId2 = req.params.userId2;
+  
+    // the name of the procedure is "trial"
+    const query = `
+        CALL trial(${userId1}, ${userId2});
+    `;
+  
+    queryDb(query, response);
+  
+});
+
+/**
+ * Inserts a row into the UserUser table. Assumes that userId1 liked userId2.
+ */
+routes.post('/api/user-user', (req, response) => {
+  console.log('POST /api/user-user invoked');
+  console.log(req.body);
+  const {userId1, userId2} = req.body;
+
+  const userInsertQuery =
+    'INSERT INTO `UserUser` (`user_1_id`, `user_2_id`) VALUES (?, ?)';
+  db.query(userInsertQuery, [userId1, userId2], (err, result) => {
     if (err) {
       console.error(err);
       response.status(500).send(err);
@@ -137,40 +159,15 @@ routes.post('/', (req, response) => {
 });
 
 /**
- * PUT /api/songs/:songId
- * Updates song with given id
- * Request body must have a `name`, `genre_id`, `artist_id`, `date`
+ * DELETE /api/user-user
+ * Deletes the user to user relationship from UserUser table with specified ids
  */
-routes.put('/:songId', (req, response) => {
-  console.log('PUT /api/songs/:songId invoked');
-  console.log(req.body);
-  const songId = req.params.songId;
-  const {name, duration, date} = req.body;
+routes.delete(' /api/user-user', (req, response) => {
+  console.log('DELETE /api/user-user invoked');
+  const {userId1, userId2} = req.body;
 
-  const songUpdateQuery =
-    'UPDATE `Song` SET `name` = ?, `duration` = ?, `date` = ? WHERE `song_id` = ? ';
-  db.query(songUpdateQuery, [name, duration, date, songId], (err, result) => {
-    if (err) {
-      console.error(err);
-      response.status(500).send(err);
-    } else {
-      console.log(`Song ${songId} successfully updated`)
-      console.log(result);
-      response.status(200).send(result);
-    }
-  });
-});
-
-/**
- * DELETE /api/song/songId
- * Deletes the song from Song table with specified id
- */
-routes.delete('/:songId', (req, response) => {
-  console.log('DELETE /api/songs/:songId invoked');
-  const songId = req.params.songId;
-
-  const songDeleteQuery = 'DELETE FROM `Song` WHERE `song_id`= ?';
-  db.query(songDeleteQuery, songId, (err, result) => {
+  const userDeleteQuery = 'DELETE FROM `UserUser` WHERE `user_id_1`= ? AND `user_id_2` = ?';
+  db.query(userDeleteQuery, [userId1, userId2], (err, result) => {
     if (err) {
       console.error(err);
       response.status(500).send(err);

@@ -27,6 +27,8 @@ export default function Matchmaking() {
       Matchmaking
       <br />
       <input type="submit" onClick={() => runQuery("UserArtist", 1)} />
+      <input type="submit" onClick={() => runQuery("UserArtist", 1)} />
+
     </Box>
 
     
