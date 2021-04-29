@@ -48,7 +48,6 @@ export default function SearchMusic() {
       Client.get(`user_genre/all?userIdQuery=${userInfo.user_id}`),
       Client.get(`user_song/all?userIdQuery=${userInfo.user_id}`),
     ]).then((values) => {
-      console.log(values);
       // Initialize likes dictionaries
       const likedArtistsDict = {};
       const likedGenresDict = {};

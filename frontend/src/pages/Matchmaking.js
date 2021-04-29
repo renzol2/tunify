@@ -1,36 +1,67 @@
-import React, { useState, useRef } from 'react';
-import { Box } from '@chakra-ui/react';
-import Axios from 'axios';
+import React, { useState } from 'react';
+import { Box, Button, Heading } from '@chakra-ui/react';
+import Client from '../api/Client';
+import useUserInfo from '../hooks/useUserInfo';
+import Footer from '../components/Footer';
 
 export default function Matchmaking() {
-  const MATCHMAKING_QUERY_ENDPOINT = 'http://localhost:3002/api/matchmaking';
   const LIMIT = 50;
-  const [responseList1, setResponseList1] = useState([]);
-  const [responseList2, setResponseList2] = useState([]);
-  const [responseList3, setResponseList3] = useState([]);
+  const [userInfo] = useUserInfo();
+  const [matchesByArtist, setMatchesByArtist] = useState([]);
+  const [matchesBySong, setMatchesBySong] = useState([]);
+  const [matchesByGenre, setMatchesByGenre] = useState([]);
 
   function runQuery(queryType, userId) {
-    const URL = `${MATCHMAKING_QUERY_ENDPOINT}/${queryType}/${LIMIT}/${userId}`;
-    Axios.get(URL).then((response) => {
-      if (queryType === 'UserSong') {
-        setResponseList1(response.data);
-      } else if (queryType === 'UserArtist') {
-        setResponseList2(response.data);
-      } else if (queryType === 'UserGenre') {
-        setResponseList3(response.data);
-      } 
-    });
+    Client.get(`matchmaking/${queryType}/${LIMIT}/${userId}`).then(
+      (response) => {
+        if (queryType === 'UserArtist') {
+          setMatchesByArtist(response.data);
+        } else if (queryType === 'UserSong') {
+          setMatchesBySong(response.data);
+        } else if (queryType === 'UserGenre') {
+          setMatchesByGenre(response.data);
+        }
+      }
+    );
+    console.log(matchesByArtist);
+    console.log(matchesBySong);
+    console.log(matchesByGenre);
   }
 
   return (
-    <Box>
-      Matchmaking
-      <br />
-      <input type="submit" onClick={() => runQuery("UserArtist", 1)} />
-      <input type="submit" onClick={() => runQuery("UserArtist", 1)} />
+    <>
+      <Box w="100%" px="5%" pt="2%" mb={2}>
+        <Heading as="h3" fontWeight="extrabold" fontSize="5xl" my={3}>
+          Your Mutual Likes
+        </Heading>
+      </Box>
 
-    </Box>
+      <Box w="100%" py="5%" bgGradient="linear(to-l, #7928CA, #FF0080)">
+        {/* TODO: put mutual likes here */}
+      </Box>
 
-    
-  )
+      <Box w="100%" px="5%" pt="2%" mb="5%">
+        <Heading as="h3" fontWeight="extrabold" fontSize="4xl" my={3}>
+          Search for people with similar music taste!
+        </Heading>
+        {/* TODO: search bar */}
+
+        <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="5%">
+          You've liked the same artists as:
+        </Heading>
+        {/* TODO: matches by artist */}
+
+        <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="5%">
+          You've liked the same genres as:
+        </Heading>
+        {/* TODO: matches by genre */}
+
+        <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="5%">
+          You've liked the same songs as:
+        </Heading>
+        {/* TODO: matches by song */}
+      </Box>
+      <Footer />
+    </>
+  );
 }
