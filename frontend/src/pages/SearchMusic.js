@@ -24,10 +24,33 @@ export default function SearchMusic() {
   const [isLoading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
   const [artists, setArtists] = useState([]);
-  const [likedArtists, setLikedArtists] = useState([]);
+  // A dictionary to access artist ids in constant O(1) time
+  const [likedArtists, setLikedArtists] = useState(null);
   const [genres, setGenres] = useState([]);
   const [songs, setSongs] = useState([]);
   const [isInitial, setInitial] = useState(true);
+
+  useEffect(() => {
+    if (userInfo !== null) {
+      Client.get(`user_artist/all?userIdQuery=${userInfo.user_id}`).then(
+        (res) => {
+          initializeLikedArtists(res.data);
+        }
+      );
+    }
+  }, [userInfo, artists]);
+
+  /**
+   * Adds liked artist ids to state dictionary
+   * @param {Array} responseData array of UserArtist pairings
+   */
+  function initializeLikedArtists(responseData) {
+    const likedArtistsDict = {};
+    for (let { artist_id } of responseData) {
+      likedArtistsDict[artist_id] = true;
+    }
+    setLikedArtists(likedArtistsDict);
+  }
 
   /**
    * Fetches search results into state
@@ -36,7 +59,6 @@ export default function SearchMusic() {
   function getSearchResults(e) {
     setInitial(false);
     e.preventDefault();
-    console.log(e);
 
     setLoading(true);
 
@@ -70,7 +92,7 @@ export default function SearchMusic() {
           </InputGroup>
         </form>
 
-        <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="2%">
+        <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="5%">
           Artists{' '}
           {!isInitial && (
             <Text fontWeight="light" fontSize="lg">
@@ -84,11 +106,16 @@ export default function SearchMusic() {
         {!isInitial && artists.length === 0 && <Text>No artists found.</Text>}
         <SimpleGrid columns={3} spacing={5}>
           {artists.map((artist) => (
-            <ArtistCard key={artist.artist_id} artist={artist} />
+            <ArtistCard
+              key={artist.artist_id}
+              artist={artist}
+              userId={userInfo.user_id}
+              isLiked={Boolean(likedArtists[artist.artist_id])}
+            />
           ))}
         </SimpleGrid>
 
-        <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="2%">
+        <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="5%">
           Genres
           {!isInitial && (
             <Text fontWeight="light" fontSize="lg">
@@ -106,7 +133,7 @@ export default function SearchMusic() {
           ))}
         </SimpleGrid>
 
-        <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="2%">
+        <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="5%">
           Songs
           {!isInitial && (
             <Text fontWeight="light" fontSize="lg">

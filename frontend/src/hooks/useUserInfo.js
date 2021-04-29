@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 
+/**
+ * Hook to fetch logged in user
+ * @param {Boolean} redirect whether to redirect to sign in upon no user info
+ * @returns 
+ */
 export default function useUserInfo(redirect = true) {
   const history = useHistory();
   const [userInfo, setUserInfo] = useState(null);
