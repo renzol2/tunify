@@ -144,7 +144,7 @@ export default function SearchMusic() {
         {isLoading && <Spinner />}
         {isInitial && <Text>Search to find your favorite genres!</Text>}
         {!isInitial && genres.length === 0 && <Text>No genres found.</Text>}
-        <SimpleGrid columns={3} spacing={5}>
+        <SimpleGrid columns={4} spacing={5}>
           {genres.map((genre) => (
             <GenreCard
               key={genre.genre_id}
