@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
-import UserCard from '../../components/UserCard';
+import UserCard from '../../components/admin/UserCard';
 
 export default function Users() {
   const [userList, setUserList] = useState([]);

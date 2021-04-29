@@ -13,6 +13,9 @@ import {
 import { SearchIcon } from '@chakra-ui/icons';
 import Client from '../api/Client';
 import Footer from '../components/Footer';
+import ArtistCard from '../components/search/ArtistCard';
+import GenreCard from '../components/search/GenreCard';
+import SongCard from '../components/search/SongCard';
 
 export default function SearchMusic() {
   const LIMIT = 50; // FIXME: make limit changeable
@@ -66,9 +69,11 @@ export default function SearchMusic() {
 
         <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="2%">
           Artists{' '}
-          <Text fontWeight="light" fontSize="lg">
-            {artists.length} results found.
-          </Text>
+          {!isInitial && (
+            <Text fontWeight="light" fontSize="lg">
+              {artists.length} results found.
+            </Text>
+          )}
         </Heading>
         <Divider my={2} />
         {isLoading && <Spinner />}
@@ -76,15 +81,17 @@ export default function SearchMusic() {
         {!isInitial && artists.length === 0 && <Text>No artists found.</Text>}
         <SimpleGrid columns={3} spacing={5}>
           {artists.map((artist) => (
-            <Text key={artist.artist_id}>{artist.name}</Text>
+            <ArtistCard key={artist.artist_id} artist={artist} />
           ))}
         </SimpleGrid>
 
         <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="2%">
           Genres
-          <Text fontWeight="light" fontSize="lg">
-            {genres.length} results found.
-          </Text>
+          {!isInitial && (
+            <Text fontWeight="light" fontSize="lg">
+              {genres.length} results found.
+            </Text>
+          )}
         </Heading>
         <Divider my={2} />
         {isLoading && <Spinner />}
@@ -92,15 +99,17 @@ export default function SearchMusic() {
         {!isInitial && genres.length === 0 && <Text>No genres found.</Text>}
         <SimpleGrid columns={3} spacing={5}>
           {genres.map((genre) => (
-            <Text key={genre.genre_id}>{genre.name}</Text>
+            <GenreCard key={genre.genre_id} genre={genre} />
           ))}
         </SimpleGrid>
 
         <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="2%">
           Songs
-          <Text fontWeight="light" fontSize="lg">
-            {songs.length} results found.
-          </Text>
+          {!isInitial && (
+            <Text fontWeight="light" fontSize="lg">
+              {songs.length} results found.
+            </Text>
+          )}
         </Heading>
         <Divider my={2} />
         {isLoading && <Spinner />}
@@ -108,7 +117,7 @@ export default function SearchMusic() {
         {!isInitial && songs.length === 0 && <Text>No songs found.</Text>}
         <SimpleGrid columns={3} spacing={5}>
           {songs.map((song) => (
-            <Text key={song.song_id}>{song.name}</Text>
+            <SongCard key={song.song_id} song={song} />
           ))}
         </SimpleGrid>
       </Box>
