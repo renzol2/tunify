@@ -7,6 +7,7 @@ import { getRandomPurple } from '../../constants/colors';
 import { useToast } from '@chakra-ui/toast';
 import Client from '../../api/Client';
 import sendErrorToast from '../../hooks/sendErrorToast';
+import { Fade } from '@chakra-ui/transition';
 
 /**
  * @param {{ artist: {
@@ -26,7 +27,7 @@ export default function ArtistCard({ artist, userId, isLiked = false }) {
    * Callback for user clicking the like button
    */
   function onLike() {
-    setLoading(true);  // Start loading (disable button)
+    setLoading(true); // Start loading (disable button)
     if (liked) {
       // If the user clicks a liked artist, unlike the artist
       // Delete row in UserArtist
@@ -43,7 +44,7 @@ export default function ArtistCard({ artist, userId, isLiked = false }) {
             title: 'Artist removed',
             description: `${artist.name} has been removed from your likes.`,
             status: 'info',
-            isClosable: true
+            isClosable: true,
           });
         })
         .catch((error) => {
@@ -67,7 +68,7 @@ export default function ArtistCard({ artist, userId, isLiked = false }) {
             title: 'Artist added',
             description: `${artist.name} has been added to your likes.`,
             status: 'success',
-            isClosable: true
+            isClosable: true,
           });
         })
         .catch((error) => {
@@ -78,26 +79,28 @@ export default function ArtistCard({ artist, userId, isLiked = false }) {
   }
 
   return (
-    <Box bgColor="gray.100" p={3} rounded={30} boxShadow="lg">
-      <HStack spacing={2} w="100%" align="stretch">
-        <Avatar
-          name={artist.name}
-          size="md"
-          bgGradient={`linear(to-l, ${purples[0]}, ${purples[1]})`}
-        />
-        <VStack spacing={1} w="100%">
-          <Text fontWeight="black">{artist.name}</Text>
-          <Text textAlign="right" fontWeight="hairline">
-            Popularity: {Math.round(artist.popularity)}
-          </Text>
-        </VStack>
-        <IconButton
-          onClick={onLike}
-          icon={liked ? <CheckCircleIcon /> : <AddIcon />}
-          mt={3}
-          disabled={isLoading}
-        />
-      </HStack>
-    </Box>
+    <Fade in>
+      <Box bgColor="gray.100" p={3} rounded={30} boxShadow="lg">
+        <HStack spacing={2} w="100%" align="stretch">
+          <Avatar
+            name={artist.name}
+            size="md"
+            bgGradient={`linear(to-l, ${purples[0]}, ${purples[1]})`}
+          />
+          <VStack spacing={1} w="100%">
+            <Text fontWeight="black">{artist.name}</Text>
+            <Text textAlign="right" fontWeight="hairline">
+              Popularity: {Math.round(artist.popularity)}
+            </Text>
+          </VStack>
+          <IconButton
+            onClick={onLike}
+            icon={liked ? <CheckCircleIcon /> : <AddIcon />}
+            mt={3}
+            disabled={isLoading}
+          />
+        </HStack>
+      </Box>
+    </Fade>
   );
 }

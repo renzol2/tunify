@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Box, Center, Flex, Text } from '@chakra-ui/layout';
 import { IconButton } from '@chakra-ui/button';
 import { AddIcon, CheckCircleIcon } from '@chakra-ui/icons';
 import { useToast } from '@chakra-ui/toast';
 import Client from '../../api/Client';
 import sendErrorToast from '../../hooks/sendErrorToast';
-
+import { Fade } from '@chakra-ui/transition';
 
 /**
  * @param {{ song: {
@@ -13,7 +13,7 @@ import sendErrorToast from '../../hooks/sendErrorToast';
  *   name: String,
  *   duration: Number,
  *   date: String
- * }, userId: Number, isLiked: Boolean }}  
+ * }, userId: Number, isLiked: Boolean }}
  */
 export default function SongCard({ song, userId, isLiked = false }) {
   const toast = useToast();
@@ -23,8 +23,8 @@ export default function SongCard({ song, userId, isLiked = false }) {
   /**
    * Callback for user clicking the like button
    */
-   function onLike() {
-    setLoading(true);  // Start loading (disable button)
+  function onLike() {
+    setLoading(true); // Start loading (disable button)
     if (liked) {
       // If the user clicks a liked song, unlike the song
       // Delete row in UserSong
@@ -41,7 +41,7 @@ export default function SongCard({ song, userId, isLiked = false }) {
             title: 'song removed',
             description: `${song.name} has been removed from your likes.`,
             status: 'info',
-            isClosable: true
+            isClosable: true,
           });
         })
         .catch((error) => {
@@ -62,10 +62,10 @@ export default function SongCard({ song, userId, isLiked = false }) {
 
           // Send toast
           toast({
-            title: 'song added',
+            title: 'Song added',
             description: `${song.name} has been added to your likes.`,
             status: 'success',
-            isClosable: true
+            isClosable: true,
           });
         })
         .catch((error) => {
@@ -76,22 +76,28 @@ export default function SongCard({ song, userId, isLiked = false }) {
   }
 
   return (
-    <Center verticalAlign bgColor="gray.100" p={3} rounded={30} boxShadow="lg">
-    <Flex justifyContent="space-between" alignItems="center" w="100%">
-      <Box ml={3}>
-        <Text fontWeight="black">
-          {song.name}
-        </Text>
-        <Text fontWeight="hairline">
-          {(song.duration / 1000 / 60).toFixed(2)} minutes
-        </Text>
-      </Box>
-      <IconButton
-        onClick={onLike}
-        icon={liked ? <CheckCircleIcon /> : <AddIcon />}
-        disabled={isLoading}
-      />
-    </Flex>
-  </Center>
-  )
+    <Fade in>
+      <Center
+        verticalAlign
+        bgColor="gray.100"
+        p={3}
+        rounded={30}
+        boxShadow="lg"
+      >
+        <Flex justifyContent="space-between" alignItems="center" w="100%">
+          <Box ml={3}>
+            <Text fontWeight="black">{song.name}</Text>
+            <Text fontWeight="hairline">
+              {(song.duration / 1000 / 60).toFixed(2)} minutes
+            </Text>
+          </Box>
+          <IconButton
+            onClick={onLike}
+            icon={liked ? <CheckCircleIcon /> : <AddIcon />}
+            disabled={isLoading}
+          />
+        </Flex>
+      </Center>
+    </Fade>
+  );
 }

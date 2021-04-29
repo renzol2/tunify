@@ -5,6 +5,7 @@ import { AddIcon, CheckCircleIcon } from '@chakra-ui/icons';
 import { useToast } from '@chakra-ui/toast';
 import Client from '../../api/Client';
 import sendErrorToast from '../../hooks/sendErrorToast';
+import { Fade } from '@chakra-ui/transition';
 
 /**
  * @param {{ genre: {
@@ -21,8 +22,8 @@ export default function GenreCard({ genre, userId, isLiked = false }) {
   /**
    * Callback for user clicking the like button
    */
-   function onLike() {
-    setLoading(true);  // Start loading (disable button)
+  function onLike() {
+    setLoading(true); // Start loading (disable button)
     if (liked) {
       // If the user clicks a liked genre, unlike the genre
       // Delete row in UserGenre
@@ -37,9 +38,9 @@ export default function GenreCard({ genre, userId, isLiked = false }) {
           // Send success toast
           toast({
             title: 'Genre removed',
-            description: `${genre.name} has been removed from your likes.`,
+            description: `${capitalize(genre.name)} has been removed from your likes.`,
             status: 'info',
-            isClosable: true
+            isClosable: true,
           });
         })
         .catch((error) => {
@@ -61,9 +62,9 @@ export default function GenreCard({ genre, userId, isLiked = false }) {
           // Send toast
           toast({
             title: 'Genre added',
-            description: `${genre.name} has been added to your likes.`,
+            description: `${capitalize(genre.name)} has been added to your likes.`,
             status: 'success',
-            isClosable: true
+            isClosable: true,
           });
         })
         .catch((error) => {
@@ -79,17 +80,25 @@ export default function GenreCard({ genre, userId, isLiked = false }) {
   };
 
   return (
-    <Center verticalAlign bgColor="gray.100" p={3} rounded={30} boxShadow="lg">
-      <Flex justifyContent="space-between" alignItems="center" w="100%">
-        <Text fontWeight="black" ml={3}>
-          {capitalize(genre.name)}
-        </Text>
-        <IconButton
-          onClick={onLike}
-          icon={liked ? <CheckCircleIcon /> : <AddIcon />}
-          disabled={isLoading}
-        />
-      </Flex>
-    </Center>
+    <Fade in>
+      <Center
+        verticalAlign
+        bgColor="gray.100"
+        p={3}
+        rounded={30}
+        boxShadow="lg"
+      >
+        <Flex justifyContent="space-between" alignItems="center" w="100%">
+          <Text fontWeight="black" ml={3}>
+            {capitalize(genre.name)}
+          </Text>
+          <IconButton
+            onClick={onLike}
+            icon={liked ? <CheckCircleIcon /> : <AddIcon />}
+            disabled={isLoading}
+          />
+        </Flex>
+      </Center>
+    </Fade>
   );
 }
