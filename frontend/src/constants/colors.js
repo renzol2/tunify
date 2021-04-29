@@ -11,3 +11,8 @@ export const PURPLES = [
   '#CD07DB',
   '#9D05A8',
 ];
+
+export function getRandomPurple() {
+  const p = PURPLES[Math.floor(Math.random() * PURPLES.length)];
+  return p;
+}

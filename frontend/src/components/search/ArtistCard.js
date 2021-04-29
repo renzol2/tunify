@@ -3,7 +3,7 @@ import { Avatar } from '@chakra-ui/avatar';
 import { IconButton } from '@chakra-ui/button';
 import { AddIcon, CheckCircleIcon } from '@chakra-ui/icons';
 import { Box, HStack, Text, VStack } from '@chakra-ui/layout';
-import { PURPLES } from '../../constants/colors';
+import { getRandomPurple } from '../../constants/colors';
 
 /**
  * @param {{ artist: {
@@ -16,11 +16,6 @@ import { PURPLES } from '../../constants/colors';
 export default function ArtistCard({ artist }) {
   const [liked, setLiked] = useState(false);
   const [purples,] = useState([getRandomPurple(), getRandomPurple()]);
-
-  function getRandomPurple() {
-    const p = PURPLES[Math.floor(Math.random() * PURPLES.length)];
-    return p;
-  }
 
   function onLike() {
     setLiked(!liked);
