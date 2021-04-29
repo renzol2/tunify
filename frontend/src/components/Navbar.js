@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
 import { Link } from 'react-router-dom';
 import { Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/menu';

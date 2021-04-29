@@ -6,6 +6,7 @@ import { Box, HStack, Text, VStack } from '@chakra-ui/layout';
 import { getRandomPurple } from '../../constants/colors';
 import { useToast } from '@chakra-ui/toast';
 import Client from '../../api/Client';
+import sendErrorToast from '../../hooks/sendErrorToast';
 
 /**
  * @param {{ artist: {
@@ -13,22 +14,13 @@ import Client from '../../api/Client';
  *   name: String
  *   popularity: Number,
  *   bio: String | null
- * }, liked: Boolean }}
+ * }, userId: Number, isLiked: Boolean }}
  */
 export default function ArtistCard({ artist, userId, isLiked = false }) {
   const toast = useToast();
   const [liked, setLiked] = useState(isLiked);
   const [isLoading, setLoading] = useState(false);
   const [purples] = useState([getRandomPurple(), getRandomPurple()]);
-
-  function sendErrorToast() {
-    toast({
-      title: 'Error',
-      description: 'An error occurred. Please refresh the page.',
-      status: 'error',
-      isClosable: true
-    });
-  }
 
   /**
    * Callback for user clicking the like button

@@ -17,40 +17,53 @@ import ArtistCard from '../components/search/ArtistCard';
 import GenreCard from '../components/search/GenreCard';
 import SongCard from '../components/search/SongCard';
 import useUserInfo from '../hooks/useUserInfo';
+import sendErrorToast from '../hooks/sendErrorToast';
 
 export default function SearchMusic() {
   const LIMIT = 50; // FIXME: make limit changeable
   const [userInfo] = useUserInfo();
   const [isLoading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
-  const [artists, setArtists] = useState([]);
-  // A dictionary to access artist ids in constant O(1) time
-  const [likedArtists, setLikedArtists] = useState(null);
-  const [genres, setGenres] = useState([]);
-  const [songs, setSongs] = useState([]);
   const [isInitial, setInitial] = useState(true);
 
-  useEffect(() => {
-    if (userInfo !== null) {
-      Client.get(`user_artist/all?userIdQuery=${userInfo.user_id}`).then(
-        (res) => {
-          initializeLikedArtists(res.data);
-        }
-      );
-    }
-  }, [userInfo, artists]);
+  // Arrays of search results
+  const [artists, setArtists] = useState([]);
+  const [genres, setGenres] = useState([]);
+  const [songs, setSongs] = useState([]);
 
-  /**
-   * Adds liked artist ids to state dictionary
-   * @param {Array} responseData array of UserArtist pairings
-   */
-  function initializeLikedArtists(responseData) {
-    const likedArtistsDict = {};
-    for (let { artist_id } of responseData) {
-      likedArtistsDict[artist_id] = true;
+  // Dictionaries to access liked ids in constant O(1) time
+  const [likedArtists, setLikedArtists] = useState(null);
+  const [likedGenres, setLikedGenres] = useState(null);
+  const [likedSongs, setLikedSongs] = useState(null);
+
+  // Fetch liked artists/songs/genres
+  useEffect(() => {
+    if (userInfo === null) {
+      return;
     }
-    setLikedArtists(likedArtistsDict);
-  }
+
+    // Resolve promises liked artists/songs/genres
+    Promise.all([
+      Client.get(`user_artist/all?userIdQuery=${userInfo.user_id}`),
+      Client.get(`user_genre/all?userIdQuery=${userInfo.user_id}`),
+      Client.get(`user_song/all?userIdQuery=${userInfo.user_id}`),
+    ]).then((values) => {
+      console.log(values);
+      // Initialize likes dictionaries
+      const likedArtistsDict = {};
+      const likedGenresDict = {};
+      const likedSongsDict = {};
+
+      for (let { artist_id } of values[0].data)
+        likedArtistsDict[artist_id] = true;
+      for (let { genre_id } of values[1].data) likedGenresDict[genre_id] = true;
+      for (let { song_id } of values[2].data) likedSongsDict[song_id] = true;
+
+      setLikedArtists(likedArtistsDict);
+      setLikedGenres(likedGenresDict);
+      setLikedSongs(likedSongsDict);
+    }).catch((e) => sendErrorToast());
+  }, [userInfo, artists]);
 
   /**
    * Fetches search results into state
@@ -71,7 +84,7 @@ export default function SearchMusic() {
       setGenres(values[1].data);
       setSongs(values[2].data);
       setLoading(false);
-    });
+    }).catch((e) => sendErrorToast());
   }
 
   return (
@@ -80,6 +93,8 @@ export default function SearchMusic() {
         <Heading as="h3" fontWeight="extrabold" fontSize="4xl" my={3}>
           Search for your favorite songs, genres, and artists.
         </Heading>
+
+        {/* Search bar */}
         <form onSubmit={getSearchResults}>
           <InputGroup colorScheme="pink">
             <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
@@ -92,6 +107,7 @@ export default function SearchMusic() {
           </InputGroup>
         </form>
 
+        {/* Artists results */}
         <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="5%">
           Artists{' '}
           {!isInitial && (
@@ -115,6 +131,7 @@ export default function SearchMusic() {
           ))}
         </SimpleGrid>
 
+        {/* Genres results */}
         <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="5%">
           Genres
           {!isInitial && (
@@ -129,10 +146,16 @@ export default function SearchMusic() {
         {!isInitial && genres.length === 0 && <Text>No genres found.</Text>}
         <SimpleGrid columns={3} spacing={5}>
           {genres.map((genre) => (
-            <GenreCard key={genre.genre_id} genre={genre} />
+            <GenreCard
+              key={genre.genre_id}
+              genre={genre}
+              userId={userInfo.user_id}
+              isLiked={Boolean(likedGenres[genre.genre_id])}
+            />
           ))}
         </SimpleGrid>
 
+        {/* Songs results */}
         <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="5%">
           Songs
           {!isInitial && (
@@ -147,7 +170,12 @@ export default function SearchMusic() {
         {!isInitial && songs.length === 0 && <Text>No songs found.</Text>}
         <SimpleGrid columns={3} spacing={5}>
           {songs.map((song) => (
-            <SongCard key={song.song_id} song={song} />
+            <SongCard
+              key={song.song_id}
+              song={song}
+              userId={userInfo.user_id}
+              isLiked={Boolean(likedSongs[song.song_id])}
+            />
           ))}
         </SimpleGrid>
       </Box>
