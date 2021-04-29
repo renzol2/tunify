@@ -60,7 +60,7 @@ routes.get('/:limit', (req, response) => {
     'INSERT INTO `UserSong` (`user_id`, `song_id`) VALUES (?,?)';
   db.query(
     userSongInsertQuery,
-    [userId, SongId],
+    [userId, songId],
     (err, result) => {
       if (err) {
         console.error(err);

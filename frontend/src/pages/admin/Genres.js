@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
-import GenreCard from '../../components/GenreCard';
+import GenreCard from '../../components/admin/GenreCard';
 
 export default function Genres() {
   const [genreList, setGenreList] = useState([]);

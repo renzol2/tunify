@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
-import ArtistCard from '../../components/ArtistCard';
+import ArtistCard from '../../components/admin/ArtistCard';
 
 export default function Artists() {
   const [artistList, setArtistList] = useState([]);

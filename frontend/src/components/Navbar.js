@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Box, Flex, Heading, Text } from '@chakra-ui/layout';
 import { Link } from 'react-router-dom';
 import { Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/menu';
 import { Button } from '@chakra-ui/button';
 import { ChevronDownIcon } from '@chakra-ui/icons';
+import useUserInfo from '../hooks/useUserInfo';
 
 /**
  * Navbar for Tunify
@@ -15,14 +16,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
  * }} accountRoutes
  */
 export default function Navbar({ navbarRoutes, accountRoutes }) {
-  const [userInfo, setUserInfo] = useState(null);
-
-  useEffect(() => {
-    const userInfoString = localStorage.getItem('userInfo');
-    if (userInfoString !== null) {
-      setUserInfo(JSON.parse(userInfoString));
-    }
-  }, []);
+  const [userInfo] = useUserInfo(false);
 
   return (
     <Box w="100%">
