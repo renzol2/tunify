@@ -6,13 +6,16 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  SimpleGrid,
   Text,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import Client from '../api/Client';
+import Footer from '../components/Footer';
 
 export default function SearchMusic() {
   const LIMIT = 50; // FIXME: make limit changeable
+  const [isLoading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
   const [artists, setArtists] = useState([]);
   const [genres, setGenres] = useState([]);
@@ -26,35 +29,69 @@ export default function SearchMusic() {
     e.preventDefault();
     console.log(e);
 
-    Client.get(`genres/${LIMIT}?q=${query.replace(' ', '%20')}`).then((res) => {
-      setGenres(res.data);
+    setLoading(true);
+
+    Promise.all([
+      Client.get(`artists/${LIMIT}?q=${query.replace(' ', '%20')}`),
+      Client.get(`genres/${LIMIT}?q=${query.replace(' ', '%20')}`),
+      Client.get(`songs/${LIMIT}?q=${query.replace(' ', '%20')}`),
+    ]).then((values) => {
+      setArtists(values[0].data);
+      setGenres(values[1].data);
+      setSongs(values[2].data);
+      setLoading(false);
     });
   }
 
   return (
-    <Box w="100%" p="5%">
-      <Heading as="h3" fontWeight="extrabold" fontSize="4xl" my={3}>
-        Search for your favorite songs, genres, and artists.
-      </Heading>
-      <form onSubmit={getSearchResults}>
-        <InputGroup colorScheme="pink">
-          <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
-          <Input
-            variant="filled"
-            placeholder="Search"
-            onChange={(e) => setQuery(e.currentTarget.value)}
-          />
-          {/* TODO: add input right element to clear? */}
-        </InputGroup>
-      </form>
+    <>
+      <Box w="100%" px="5%" pt="2%" mb="5%">
+        <Heading as="h3" fontWeight="extrabold" fontSize="4xl" my={3}>
+          Search for your favorite songs, genres, and artists.
+        </Heading>
+        <form onSubmit={getSearchResults}>
+          <InputGroup colorScheme="pink">
+            <InputLeftElement pointerEvents="none" children={<SearchIcon />} />
+            <Input
+              variant="filled"
+              placeholder="Search"
+              onChange={(e) => setQuery(e.currentTarget.value)}
+            />
+            {/* TODO: add input right element to clear? */}
+          </InputGroup>
+        </form>
 
-      <Divider my="2%" />
+        <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="2%">
+          Artists
+        </Heading>
+        <Divider my={2} />
+        <SimpleGrid columns={3} spacing={5}>
+          {artists.map((artist) => (
+            <Text key={artist.artist_id}>{artist.name}</Text>
+          ))}
+        </SimpleGrid>
 
-      {genres.map((genre) => (
-        <Text key={genre.genre_id}>
-          {genre.name}
-        </Text>
-      ))}
-    </Box>
+        <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="2%">
+          Genres
+        </Heading>
+        <Divider my={2} />
+        <SimpleGrid columns={3} spacing={5}>
+          {genres.map((genre) => (
+            <Text key={genre.genre_id}>{genre.name}</Text>
+          ))}
+        </SimpleGrid>
+
+        <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="2%">
+          Songs
+        </Heading>
+        <Divider my={2} />
+        <SimpleGrid columns={3} spacing={5}>
+          {songs.map((song) => (
+            <Text key={song.song_id}>{song.name}</Text>
+          ))}
+        </SimpleGrid>
+      </Box>
+      <Footer />
+    </>
   );
 }
