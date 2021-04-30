@@ -5,6 +5,9 @@ import { Fade } from '@chakra-ui/transition';
 import { getRandomPurple } from '../../constants/colors';
 import { IconButton } from '@chakra-ui/button';
 import { AddIcon, CheckCircleIcon } from '@chakra-ui/icons';
+import Client from '../../api/Client';
+import { useToast } from '@chakra-ui/toast';
+import sendErrorToast from '../../hooks/sendErrorToast';
 
 /**
  * @param {{
@@ -17,7 +20,8 @@ import { AddIcon, CheckCircleIcon } from '@chakra-ui/icons';
  *   },
  * numSimilar: Number,
  * isLiked: Boolean,
- * category: String
+ * category: String,
+ * currentUserId: Number
  * }}
  */
 export default function UserCard({
@@ -25,14 +29,70 @@ export default function UserCard({
   numSimilar,
   isLiked = false,
   category,
+  currentUserId,
 }) {
+  const toast = useToast();
   const [purples] = useState([getRandomPurple(), getRandomPurple()]);
   const [liked, setLiked] = useState(isLiked);
   const [isLoading, setLoading] = useState(false);
-
-  function onLike() {}
-
   const name = `${user.first_name} ${user.last_name}`;
+
+  /**
+   * Callback for user clicking the like button
+   */
+  function onLike() {
+    setLoading(true); // Start loading (disable button)
+    if (liked) {
+      // If the user clicks a liked user, unlike the user
+      // Delete row in UserArtist
+      Client.delete(`/matchmaking/user_user`, {
+        userId1: currentUserId,
+        userId2: user.user_id,
+      })
+        .then((res) => {
+          // Set button to unliked, loading false
+          setLiked(false);
+          setLoading(false);
+
+          // Send success toast
+          toast({
+            title: 'User removed',
+            description: `${name} has been removed from your likes.`,
+            status: 'info',
+            isClosable: true,
+          });
+        })
+        .catch((error) => {
+          setLoading(false);
+          sendErrorToast();
+        });
+    } else {
+      // If the user clicks an unliked user, like the user
+      // Create row in UserUser
+      Client.post(`/matchmaking/user_user`, {
+        userId1: currentUserId,
+        userId2: user.user_id,
+      })
+        .then((res) => {
+          // Set button to be liked, loading false
+          setLiked(true);
+          setLoading(false);
+
+          // Send toast
+          toast({
+            title: 'User added',
+            description: `${name} has been added to your likes.`,
+            status: 'success',
+            isClosable: true,
+          });
+        })
+        .catch((error) => {
+          setLoading(false);
+          sendErrorToast();
+        });
+    }
+  }
+
   return (
     <Fade in>
       <Box bgColor="gray.100" p={3} rounded={30} boxShadow="lg">
@@ -52,7 +112,8 @@ export default function UserCard({
               </Text>
             </HStack>
             <Text fontWeight="normal" mt={2}>
-              {numSimilar} {category}{numSimilar === 1 ? '' : 's'} in common
+              {numSimilar} {category}
+              {numSimilar === 1 ? '' : 's'} in common
             </Text>
           </Box>
           <IconButton

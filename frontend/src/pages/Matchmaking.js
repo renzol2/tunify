@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Heading, SimpleGrid, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Fade,
+  Heading,
+  SimpleGrid,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 import Client from '../api/Client';
 import useUserInfo from '../hooks/useUserInfo';
 import Footer from '../components/Footer';
@@ -13,21 +20,43 @@ export default function Matchmaking() {
   const [matchesByGenre, setMatchesByGenre] = useState([]);
   const [matchesBySong, setMatchesBySong] = useState([]);
   const [mutualLikes, setMutualLikes] = useState([]);
+  const [isLoading, setLoading] = useState(false);
+
+  // Dictionary to access liked users in O(1) time
+  const [likedUsers, setLikedUsers] = useState(null);
 
   useEffect(() => {
     if (userInfo === null) return;
 
+    setLoading(true);
     Promise.all([
+      // Matches by artist/genre/song
       Client.get(`matchmaking/UserArtist/${LIMIT}/${userInfo.user_id}`),
       Client.get(`matchmaking/UserGenre/${LIMIT}/${userInfo.user_id}`),
       Client.get(`matchmaking/UserSong/${LIMIT}/${userInfo.user_id}`),
+
+      // Users liked by logged in user
+      Client.get(`matchmaking/user_user/all?user1IdQuery=${userInfo.user_id}`),
     ])
       .then((values) => {
+        // Initialize liked users dictionary
+        const likedUsersDict = {};
+        for (let { user_2_id } of values[3].data)
+          likedUsersDict[user_2_id] = true;
+        setLikedUsers(likedUsersDict);
+
+        // Initialize matches
         setMatchesByArtist(values[0].data);
         setMatchesByGenre(values[1].data);
         setMatchesBySong(values[2].data);
+
+        setLikedUsers(false);
+        setLoading(false);
       })
-      .catch((e) => sendErrorToast());
+      .catch((e) => {
+        sendErrorToast();
+        setLoading(false);
+      });
   }, [userInfo]);
 
   return (
@@ -40,37 +69,32 @@ export default function Matchmaking() {
 
       <Box w="100%" p="5%" bgGradient="linear(to-l, #7928CA, #FF0080)">
         {/* TODO: put mutual likes here */}
-        {mutualLikes.length === 0 && (
-          <Text color="white" fontWeight="hairline" fontSize="lg">
-            No one's liked you back yet ... :(
-          </Text>
+        {isLoading && <Spinner />}
+        {!isLoading && mutualLikes.length === 0 && (
+          <Fade in>
+            <Text color="white" fontWeight="hairline" fontSize="lg">
+              No one's liked you back yet ... :(
+            </Text>
+          </Fade>
         )}
       </Box>
 
       <Box w="100%" px="5%" pt="2%" mb="5%">
         {/* TODO: search bar */}
-        <Button
-          onClick={() => {
-            console.log(matchesByArtist);
-            console.log(matchesByGenre);
-            console.log(matchesBySong);
-          }}
-        >
-          Log matches
-        </Button>
 
         <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="5%">
           You've liked the same artists as:
         </Heading>
-        {/* TODO: matches by artist */}
+        {isLoading && <Spinner />}
         <SimpleGrid columns={3} spacing={5}>
           {matchesByArtist.map((user) => (
             <UserCard
               key={user.user_id}
               user={user}
-              isLiked={false}  // FIXME: get user info
+              isLiked={Boolean(likedUsers[user.user_id])}
               numSimilar={user.num_similar_artists}
               category="artist"
+              currentUserId={userInfo.user_id}
             />
           ))}
         </SimpleGrid>
@@ -78,12 +102,36 @@ export default function Matchmaking() {
         <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="5%">
           You've liked the same genres as:
         </Heading>
-        {/* TODO: matches by genre */}
+        {isLoading && <Spinner />}
+        <SimpleGrid columns={3} spacing={5}>
+          {matchesByGenre.map((user) => (
+            <UserCard
+              key={user.user_id}
+              user={user}
+              isLiked={Boolean(likedUsers[user.user_id])}
+              numSimilar={user.num_similar_genres}
+              category="genre"
+              currentUserId={userInfo.user_id}
+            />
+          ))}
+        </SimpleGrid>
 
         <Heading as="h4" fontWeight="extrabold" fontSize="3xl" mb={3} mt="5%">
           You've liked the same songs as:
         </Heading>
-        {/* TODO: matches by song */}
+        {isLoading && <Spinner />}
+        <SimpleGrid columns={3} spacing={5}>
+          {matchesBySong.map((user) => (
+            <UserCard
+              key={user.user_id}
+              user={user}
+              isLiked={Boolean(likedUsers[user.user_id])}
+              numSimilar={user.num_similar_songs}
+              category="song"
+              currentUserId={userInfo.user_id}
+            />
+          ))}
+        </SimpleGrid>
       </Box>
       <Footer />
     </>
