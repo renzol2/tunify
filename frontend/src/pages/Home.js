@@ -2,12 +2,13 @@ import React from 'react';
 import { Box, Button, Center, Heading, VStack } from '@chakra-ui/react';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
+import { DEFAULT_GRADIENT } from '../constants/colors';
 
 export default function Home() {
   return (
     <Box w="100%">
       {/* Hero */}
-      <Center minH="75vh" w="100%" bgGradient="linear(to-l, #7928CA, #FF0080)">
+      <Center minH="75vh" w="100%" bgGradient={DEFAULT_GRADIENT}>
         <VStack spacing={10} p="5%">
           {/* Title */}
           <Heading

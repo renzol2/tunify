@@ -19,6 +19,7 @@ import Footer from '../../components/Footer';
 import Client from '../../api/Client';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
+import { DEFAULT_GRADIENT } from '../../constants/colors';
 
 export default function SignUp() {
   const history = useHistory();
@@ -100,7 +101,7 @@ export default function SignUp() {
   return (
     <Box>
       <form ref={signUpFormRef} onSubmit={submitSignUpInfo}>
-        <Center w="100%" bgGradient="linear(to-l, #7928CA, #FF0080)">
+        <Center w="100%" bgGradient={DEFAULT_GRADIENT}>
           <VStack
             bgColor="white"
             px="10%"

@@ -18,6 +18,7 @@ import {
 import { useHistory } from 'react-router';
 import Footer from '../../components/Footer';
 import useUserInfo from '../../hooks/useUserInfo';
+import { DEFAULT_GRADIENT } from '../../constants/colors';
 
 export default function Profile() {
   const history = useHistory();
@@ -32,7 +33,7 @@ export default function Profile() {
 
   return (
     <Box>
-      <Center w="100%" bgGradient="linear(to-l, #7928CA, #FF0080)">
+      <Center w="100%" bgGradient={DEFAULT_GRADIENT}>
         {userInfo !== null && (
           <VStack
             bgColor="white"

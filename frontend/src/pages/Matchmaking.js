@@ -12,6 +12,7 @@ import useUserInfo from '../hooks/useUserInfo';
 import Footer from '../components/Footer';
 import sendErrorToast from '../hooks/sendErrorToast';
 import UserCard from '../components/matchmaking/UserCard';
+import { DEFAULT_GRADIENT } from '../constants/colors';
 
 export default function Matchmaking() {
   const LIMIT = 50;
@@ -67,7 +68,7 @@ export default function Matchmaking() {
         </Heading>
       </Box>
 
-      <Box w="100%" p="5%" bgGradient="linear(to-l, #7928CA, #FF0080)">
+      <Box w="100%" p="5%" bgGradient={DEFAULT_GRADIENT}>
         {/* TODO: put mutual likes here */}
         {isLoading && <Spinner />}
         {!isLoading && mutualLikes.length === 0 && (
@@ -86,7 +87,7 @@ export default function Matchmaking() {
           You've liked the same artists as:
         </Heading>
         {isLoading && <Spinner />}
-        <SimpleGrid columns={3} spacing={5}>
+        <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={5}>
           {matchesByArtist.map((user) => (
             <UserCard
               key={user.user_id}
@@ -103,7 +104,7 @@ export default function Matchmaking() {
           You've liked the same genres as:
         </Heading>
         {isLoading && <Spinner />}
-        <SimpleGrid columns={3} spacing={5}>
+        <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={5}>
           {matchesByGenre.map((user) => (
             <UserCard
               key={user.user_id}
@@ -120,7 +121,7 @@ export default function Matchmaking() {
           You've liked the same songs as:
         </Heading>
         {isLoading && <Spinner />}
-        <SimpleGrid columns={3} spacing={5}>
+        <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={5}>
           {matchesBySong.map((user) => (
             <UserCard
               key={user.user_id}
