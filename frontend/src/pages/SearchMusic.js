@@ -48,7 +48,6 @@ export default function SearchMusic() {
       Client.get(`user_genre/all?userIdQuery=${userInfo.user_id}`),
       Client.get(`user_song/all?userIdQuery=${userInfo.user_id}`),
     ]).then((values) => {
-      console.log(values);
       // Initialize likes dictionaries
       const likedArtistsDict = {};
       const likedGenresDict = {};
@@ -144,7 +143,7 @@ export default function SearchMusic() {
         {isLoading && <Spinner />}
         {isInitial && <Text>Search to find your favorite genres!</Text>}
         {!isInitial && genres.length === 0 && <Text>No genres found.</Text>}
-        <SimpleGrid columns={3} spacing={5}>
+        <SimpleGrid columns={4} spacing={5}>
           {genres.map((genre) => (
             <GenreCard
               key={genre.genre_id}

@@ -12,7 +12,10 @@ export const PURPLES = [
   '#9D05A8',
 ];
 
+// TODO: use name as hash so we get the same purple for the same name
 export function getRandomPurple() {
   const p = PURPLES[Math.floor(Math.random() * PURPLES.length)];
   return p;
 }
+
+export const DEFAULT_GRADIENT = 'linear(to-l, #7928CA, #FF0080)';

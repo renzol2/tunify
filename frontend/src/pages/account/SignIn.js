@@ -3,6 +3,7 @@ import { Box, Button, Center, Divider, Flex, Heading, Input, Text, useToast, VSt
 import { Link, useHistory } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Client from '../../api/Client';
+import { DEFAULT_GRADIENT } from '../../constants/colors';
 
 export default function SignIn() {
   const history = useHistory();
@@ -55,7 +56,7 @@ export default function SignIn() {
   return (
     <Box>
     <form ref={signInFormRef} onSubmit={submitSignInInfo}>
-      <Center w="100%" bgGradient="linear(to-l, #7928CA, #FF0080)">
+      <Center w="100%" bgGradient={DEFAULT_GRADIENT}>
         <VStack
           bgColor="white"
           px="10%"
