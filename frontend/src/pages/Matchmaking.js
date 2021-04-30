@@ -20,7 +20,6 @@ export default function Matchmaking() {
   const [matchesByArtist, setMatchesByArtist] = useState([]);
   const [matchesByGenre, setMatchesByGenre] = useState([]);
   const [matchesBySong, setMatchesBySong] = useState([]);
-  const [mutualLikes, setMutualLikes] = useState([]);
   const [isLoading, setLoading] = useState(false);
 
   // Dictionary to access liked users in O(1) time
@@ -42,8 +41,9 @@ export default function Matchmaking() {
       .then((values) => {
         // Initialize liked users dictionary
         const likedUsersDict = {};
-        for (let { user_2_id } of values[3].data)
-          likedUsersDict[user_2_id] = true;
+        for (let { user_2_id, initiative } of values[3].data) {
+          likedUsersDict[user_2_id] = { initiative: initiative };
+        }
         setLikedUsers(likedUsersDict);
 
         // Initialize matches
@@ -51,7 +51,6 @@ export default function Matchmaking() {
         setMatchesByGenre(values[1].data);
         setMatchesBySong(values[2].data);
 
-        setLikedUsers(false);
         setLoading(false);
       })
       .catch((e) => {
@@ -64,20 +63,16 @@ export default function Matchmaking() {
     <>
       <Box w="100%" px="5%" pt="2%" mb={2}>
         <Heading as="h3" fontWeight="extrabold" fontSize="5xl" my={3}>
-          Your Mutual Likes
+          Matchmaking
         </Heading>
       </Box>
 
       <Box w="100%" p="5%" bgGradient={DEFAULT_GRADIENT}>
-        {/* TODO: put mutual likes here */}
-        {isLoading && <Spinner />}
-        {!isLoading && mutualLikes.length === 0 && (
           <Fade in>
             <Text color="white" fontWeight="hairline" fontSize="lg">
-              No one's liked you back yet 😢
+              Find people who have similar interests as you!
             </Text>
           </Fade>
-        )}
       </Box>
 
       <Box w="100%" px="5%" pt="2%" mb="5%">
@@ -99,6 +94,10 @@ export default function Matchmaking() {
               numSimilar={user.num_similar_artists}
               category="artist"
               currentUserId={userInfo.user_id}
+              theyShowedInitiative={
+                Boolean(likedUsers[user.user_id]) &&
+                likedUsers[user.user_id].initiative === 0
+              }
             />
           ))}
         </SimpleGrid>
@@ -119,6 +118,10 @@ export default function Matchmaking() {
               numSimilar={user.num_similar_genres}
               category="genre"
               currentUserId={userInfo.user_id}
+              theyShowedInitiative={
+                Boolean(likedUsers[user.user_id]) &&
+                likedUsers[user.user_id].initiative === 0
+              }
             />
           ))}
         </SimpleGrid>
@@ -139,6 +142,10 @@ export default function Matchmaking() {
               numSimilar={user.num_similar_songs}
               category="song"
               currentUserId={userInfo.user_id}
+              theyShowedInitiative={
+                Boolean(likedUsers[user.user_id]) &&
+                likedUsers[user.user_id].initiative === 0
+              }
             />
           ))}
         </SimpleGrid>

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Avatar } from '@chakra-ui/avatar';
 import { Box, Flex, HStack, Text } from '@chakra-ui/layout';
+import { Tooltip } from '@chakra-ui/react';
 import { Fade } from '@chakra-ui/transition';
 import { DEFAULT_GRADIENT, getRandomPurple } from '../../constants/colors';
 import { Button, IconButton } from '@chakra-ui/button';
-import { AddIcon, CheckCircleIcon } from '@chakra-ui/icons';
+import { AddIcon, CheckCircleIcon, StarIcon } from '@chakra-ui/icons';
 import Client from '../../api/Client';
 import { useToast } from '@chakra-ui/toast';
 import sendErrorToast from '../../hooks/sendErrorToast';
@@ -23,7 +24,8 @@ import { useDisclosure } from '@chakra-ui/hooks';
  * numSimilar: Number,
  * isLiked: Boolean,
  * category: String,
- * currentUserId: Number
+ * currentUserId: Number,
+ * theyShowedInitiative: Boolean
  * }}
  */
 export default function UserCard({
@@ -32,6 +34,7 @@ export default function UserCard({
   isLiked = false,
   category,
   currentUserId,
+  theyShowedInitiative,
 }) {
   const toast = useToast();
   const [purples] = useState([getRandomPurple(), getRandomPurple()]);
@@ -128,11 +131,7 @@ export default function UserCard({
               disabled={isLoading}
             />
           </HStack>
-          <Flex
-            flexDirection="row-reverse"
-            justifyContent="space-between"
-            alignItems="stretch"
-          >
+          <Flex flexDirection="row-reverse" alignItems="center">
             <Button
               size="xs"
               bgGradient={DEFAULT_GRADIENT}
@@ -142,10 +141,18 @@ export default function UserCard({
               }}
               onClick={onOpen}
               fontWeight="hairline"
-              mr={2}
+              mx={2}
             >
               Compare likes
             </Button>
+            {theyShowedInitiative && (
+              <Tooltip
+                label={`${name} liked you first. Reach out to them and start a conversation!`}
+                rounded={10}
+              >
+                <StarIcon />
+              </Tooltip>
+            )}
           </Flex>
         </Box>
       </Fade>

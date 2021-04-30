@@ -35,7 +35,6 @@ export default function UserModal({
       .then((res) => {
         // Response data format: [ songs[], artists[], genres[], mysql ]
         const { data } = res;
-        console.log(data);
         setSharedSongs(data[0]);
         setSharedArtists(data[1]);
         setSharedGenres(data[2]);
