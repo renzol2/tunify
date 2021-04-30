@@ -15,7 +15,7 @@ import UserCard from '../components/matchmaking/UserCard';
 import { DEFAULT_GRADIENT } from '../constants/colors';
 
 export default function Matchmaking() {
-  const LIMIT = 50;
+  const LIMIT = '50';
   const [userInfo] = useUserInfo();
   const [matchesByArtist, setMatchesByArtist] = useState([]);
   const [matchesByGenre, setMatchesByGenre] = useState([]);
@@ -74,7 +74,7 @@ export default function Matchmaking() {
         {!isLoading && mutualLikes.length === 0 && (
           <Fade in>
             <Text color="white" fontWeight="hairline" fontSize="lg">
-              No one's liked you back yet ... :(
+              No one's liked you back yet 😢
             </Text>
           </Fade>
         )}
@@ -87,6 +87,9 @@ export default function Matchmaking() {
           You've liked the same artists as:
         </Heading>
         {isLoading && <Spinner />}
+        {!isLoading && matchesByArtist.length === 0 && (
+          <Text fontWeight="hairline">No one. 🤷‍♀️</Text>
+        )}
         <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={5}>
           {matchesByArtist.map((user) => (
             <UserCard
@@ -104,6 +107,9 @@ export default function Matchmaking() {
           You've liked the same genres as:
         </Heading>
         {isLoading && <Spinner />}
+        {!isLoading && matchesByGenre.length === 0 && (
+          <Text fontWeight="hairline">No one. 🤷‍♀️</Text>
+        )}
         <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={5}>
           {matchesByGenre.map((user) => (
             <UserCard
@@ -121,6 +127,9 @@ export default function Matchmaking() {
           You've liked the same songs as:
         </Heading>
         {isLoading && <Spinner />}
+        {!isLoading && matchesBySong.length === 0 && (
+          <Text fontWeight="hairline">No one. 🤷‍♀️</Text>
+        )}
         <SimpleGrid columns={{ base: 1, md: 2, xl: 3 }} spacing={5}>
           {matchesBySong.map((user) => (
             <UserCard

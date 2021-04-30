@@ -13,6 +13,7 @@ import { Spinner } from '@chakra-ui/spinner';
 import { Fade } from '@chakra-ui/transition';
 import React, { useState, useEffect } from 'react';
 import Client from '../../api/Client';
+import { DEFAULT_GRADIENT } from '../../constants/colors';
 import sendErrorToast from '../../hooks/sendErrorToast';
 
 export default function UserModal({
@@ -47,7 +48,7 @@ export default function UserModal({
   }, [currentUserId, user]);
 
   const NameCard = ({ text }) => (
-    <Fade in key={text}>
+    <Fade in>
       <Box bgColor="gray.100" p={3} rounded={30} boxShadow="lg">
         <Text fontWeight="black">{text}</Text>
       </Box>
@@ -66,30 +67,39 @@ export default function UserModal({
           {isLoading && <Spinner />}
           {!isLoading && (
             <Box>
-              <Heading as="h4" size="md" my={5}>
+              <Heading as="h4" size="md" my={5} fontWeight="hairline">
                 You and {name} both listen to these artists:
               </Heading>
+              {sharedArtists.length === 0 && (
+                <Text>Oops, nothing in common here. 😅</Text>
+              )}
               <SimpleGrid columns={{ base: 2, md: 3, xl: 5 }} spacing={2}>
                 {sharedArtists.map(({ artisto }) => (
-                  <NameCard text={artisto} />
+                  <NameCard key={artisto} text={artisto} />
                 ))}
               </SimpleGrid>
 
-              <Heading as="h4" size="md" my={5}>
+              <Heading as="h4" size="md" my={5} fontWeight="hairline">
                 ... and these genres:
               </Heading>
+              {sharedGenres.length === 0 && (
+                <Text>Oops, nothing in common here. 😅</Text>
+              )}
               <SimpleGrid columns={{ base: 2, md: 3, xl: 5 }} spacing={2}>
                 {sharedGenres.map(({ genreo }) => (
-                  <NameCard text={genreo} />
+                  <NameCard key={genreo} text={genreo} />
                 ))}
               </SimpleGrid>
 
-              <Heading as="h4" size="md" my={5}>
+              <Heading as="h4" size="md" my={5} fontWeight="hairline">
                 ... and these songs:
               </Heading>
+              {sharedSongs.length === 0 && (
+                <Text>Oops, nothing in common here. 😅</Text>
+              )}
               <SimpleGrid columns={{ base: 2, md: 3, xl: 5 }} spacing={2}>
                 {sharedSongs.map(({ songo }) => (
-                  <NameCard text={songo} />
+                  <NameCard key={songo} text={songo} />
                 ))}
               </SimpleGrid>
             </Box>
@@ -97,10 +107,16 @@ export default function UserModal({
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
+          <Button
+            bgGradient={DEFAULT_GRADIENT}
+            color="white"
+            onClick={onClose}
+            _hover={{
+              opacity: 0.6,
+            }}
+          >
             Close
           </Button>
-          <Button variant="ghost">Secondary Action</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
