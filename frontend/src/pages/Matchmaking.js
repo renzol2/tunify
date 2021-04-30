@@ -68,7 +68,7 @@ export default function Matchmaking() {
             <UserCard
               key={user.user_id}
               user={user}
-              isLiked={false}
+              isLiked={false}  // FIXME: get user info
               numSimilar={user.num_similar_artists}
               category="artist"
             />
