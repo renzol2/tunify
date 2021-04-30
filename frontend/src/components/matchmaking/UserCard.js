@@ -141,6 +141,8 @@ export default function UserCard({
                 opacity: 0.5,
               }}
               onClick={onOpen}
+              fontWeight="hairline"
+              mr={2}
             >
               Compare likes
             </Button>
@@ -148,7 +150,15 @@ export default function UserCard({
         </Box>
       </Fade>
 
-      {isOpen && <UserModal user={user} isOpen={isOpen} onClose={onClose} />}
+      {isOpen && (
+        <UserModal
+          user={user}
+          isOpen={isOpen}
+          onClose={onClose}
+          name={name}
+          currentUserId={currentUserId}
+        />
+      )}
     </>
   );
 }

@@ -118,8 +118,8 @@ routes.get('/UserArtist/:limit/:userId', (req, response) => {
  * 2) SharedGenres (has one column, "genreo")
  * 3) SharedSongs (has one column, "songo")
  */
-routes.get('/UserArtist/:limit/:userId1/:userId2', (req, response) => {
-  console.log('GET /:UserArtist:limit:userId:userId2 invoked');
+routes.get('/shared/:limit/:userId1/:userId2', (req, response) => {
+  console.log('GET /shared/:limit/:userId/:userId2 invoked');
   const userId1 = req.params.userId1;
   const userId2 = req.params.userId2;
 
