@@ -39,6 +39,7 @@ app.use('/api/user_genre', user_genre);
 app.use('/api/user_song', user_song);
 app.use('/api/user_artist', user_artist);
 
-app.listen(3002, () => {
-  console.log('running on port 3002');
+const port = process.env.PORT || 3002;
+app.listen(port, () => {
+  console.log(`running on port ${port}`);
 });
