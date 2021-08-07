@@ -2,6 +2,8 @@
 
 [UIUC](https://cs.illinois.edu/) [**CS 411 Database Systems**](https://cs.illinois.edu/academics/courses/CS411) Final Course Project
 
+![landing](https://user-images.githubusercontent.com/55109467/128589420-16c61c2c-d692-4660-858d-e7831234386d.png)
+
 ## Table of Contents
 
 - [Tunify](#tunify)
@@ -32,7 +34,7 @@ In the grand scheme of things, Tunify was developed to address the lack of socia
 
 To populate the database that would be necessary to build Tunify, we found a Spotify dataset from Kaggle with data on various categories involving Spotify’s data. We were able to settle on the following categories to integrate into Tunify: Artists, Genres, and Songs. To parse this data set, we used the Pandas library from Python on Jupyter Notebooks, and obtained the necessary data to populate our tables. Our data is mainly broken down into two collections: music related data from the Spotify set and the user collections. The user collections include users, the matches they make, and the musical content that they like. Upon deciding all of our categories we were able to develop an overall design for Tunify’s backend and user story, outlined via our ER diagram:
 
-TODO: insert diagram
+![er-diagram](https://user-images.githubusercontent.com/55109467/128589433-a23545e6-17ac-4334-a74c-0b0162b20260.png)
 
 As demonstrated, Tunify’s database tables are tightly connected. Users create uniquely identified accounts through which they can like artists, users, and genres. Artists can belong to specific genres, and they create their own songs. With this in mind, we were able to develop a plan for our database and decide on schemas.
 
@@ -82,29 +84,29 @@ The next section will elaborate on the data flow with each part of the user stor
 
 ## Data Flow
 
-TODO: home screen
+![landing](https://user-images.githubusercontent.com/55109467/128589420-16c61c2c-d692-4660-858d-e7831234386d.png)
 
 Tunify has two states; the user is either logged in or not logged in. In the first step of the user story, the user can log in by either creating a new account using an email, or signing in using an existing account’s email. When a user creates an account, a new User is created in the database, and the user is logged in. When a user logs in with an existing account, the backend checks if the user’s email already exists within the database. If the email does exist, the user can log in successfully; otherwise, the user must sign up with that email or choose an existing email. These operations are fairly simple, with the authentication state and some of the error handling being handled in the frontend.
 
-TODO: sign up
+![sign-in](https://user-images.githubusercontent.com/55109467/128589446-6e9ebb23-164c-4948-ad50-4ea60a502dd1.png)
 
-TODO: sign in
+![sign-up](https://user-images.githubusercontent.com/55109467/128589452-5945f526-0ea8-4493-a51a-29496fb6204a.png)
 
 In the second step of the user story, the user can search for artists, genres, and songs, and add them to their likes. The Search page allows the user to query by name, which returns the names of any artists, genres, and songs that match the query. When the user likes an artist, genre, or song, a relationship is created in our relational tables between users and artists/genres/songs. The user can also dislike songs, which simply removes that relationship from the relational tables.
 
-TODO: search
+![search](https://user-images.githubusercontent.com/55109467/128589462-7744062a-a3b0-4275-be0d-9eaf8b23bcb1.png)
 
 The third and most important step of our user story involves the Matchmaking page, where users can view other users who have liked the same artists, genres, and songs. This page fetches those users immediately, displaying all the users in an easy-to-view format.
 
-TODO: matchmkaing
+![matchmaking](https://user-images.githubusercontent.com/55109467/128589468-2bb314ce-745c-4090-8467-4ea0094c7e89.png)
 
 The user can then directly compare all the artists, genres, and songs that they have liked with another user, which is powered by a stored procedure.
 
-TODO: comparison
+![comparison](https://user-images.githubusercontent.com/55109467/128589474-f6b435d9-b861-491b-9ebe-d0958d2db95f.png)
 
 If the user pleases, they can like the users on the Matchmaking page, creating relationships between both users. Our database trigger keeps track of which user likes the other first; so, for example, User A likes User B first, and then User B likes User A after, User B will be able to see that User A took “initiative” and liked them first. This feature is aimed to encourage users to interact more, emphasizing the initiative that some users take when wanting to create connections.
 
-TODO: tooltip
+![tooltip](https://user-images.githubusercontent.com/55109467/128589481-8f2e38f1-25d4-4eee-bd0a-ad608fef5975.png)
 
 ## Challenges and Conclusion
 
