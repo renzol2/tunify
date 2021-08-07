@@ -63,8 +63,53 @@ Upon finishing the stage, we had a functional web interface with the following p
 
 ## Stored Procedure and Trigger
 
+The advanced database program that we found most appropriate for Tunify was the stored procedure + trigger combination. These two ended up being very useful to our application, as our application’s functionality is dependent on user contribution, and having various tables updated on user interaction is ideal for Tunify. Specifically, our stored procedure handled three different tasks simultaneously: it queried the similar artists, users, and genres between two users, put these three categories into separate tables, and returned the three newly created tables.
+
+Our trigger served a completely different purpose. When a user liked another user, we decided to have our trigger set the value of the “initiative” column in the UserUser table to 1- this meant that one user took initiative to like another user, and the results of this would be displayed on the page of the user who was “liked”, as a message that said, “`User` liked you first! Like them back!”
+
+Developing the trigger was where we faced some major challenges, but we were able to overcome them by implementing the solution above. Initially, we hoped to create a trigger which increments a match count column, when two users like each other. While working on the trigger, we realized we can only update new rows and columns. As a result, we redesigned the solution to incorporate the newly created initiative column instead. This allowed us to satisfy not only the project requests, but add a level of interactivity to our application. We would like to note that it would be nice to add the match count feature in a future iteration of Tunify.
+
 ## User Story
+
+Ultimately, all of these attributes developed alongside our frontend fit together to create our final, current version of Tunify, a web service with a cohesive user story:
+
+- User creates an account with their email, or signs in with an existing email.
+- User likes their preferred artists, genres, and songs on the Search page.
+- User is presented with other users with mutual interests on the Matchmaking page.
+- User can show initiative by liking another user’s profile; the other User is notified of this and can like them back, which can prompt conversation.
+
+The next section will elaborate on the data flow with each part of the user story, and how our database accommodates this data flow appropriately.
 
 ## Data Flow
 
+TODO: home screen
+
+Tunify has two states; the user is either logged in or not logged in. In the first step of the user story, the user can log in by either creating a new account using an email, or signing in using an existing account’s email. When a user creates an account, a new User is created in the database, and the user is logged in. When a user logs in with an existing account, the backend checks if the user’s email already exists within the database. If the email does exist, the user can log in successfully; otherwise, the user must sign up with that email or choose an existing email. These operations are fairly simple, with the authentication state and some of the error handling being handled in the frontend.
+
+TODO: sign up
+
+TODO: sign in
+
+In the second step of the user story, the user can search for artists, genres, and songs, and add them to their likes. The Search page allows the user to query by name, which returns the names of any artists, genres, and songs that match the query. When the user likes an artist, genre, or song, a relationship is created in our relational tables between users and artists/genres/songs. The user can also dislike songs, which simply removes that relationship from the relational tables.
+
+TODO: search
+
+The third and most important step of our user story involves the Matchmaking page, where users can view other users who have liked the same artists, genres, and songs. This page fetches those users immediately, displaying all the users in an easy-to-view format.
+
+TODO: matchmkaing
+
+The user can then directly compare all the artists, genres, and songs that they have liked with another user, which is powered by a stored procedure.
+
+TODO: comparison
+
+If the user pleases, they can like the users on the Matchmaking page, creating relationships between both users. Our database trigger keeps track of which user likes the other first; so, for example, User A likes User B first, and then User B likes User A after, User B will be able to see that User A took “initiative” and liked them first. This feature is aimed to encourage users to interact more, emphasizing the initiative that some users take when wanting to create connections.
+
+TODO: tooltip
+
 ## Challenges and Conclusion
+
+While we faced our fair share of challenges, these allowed us to learn and devise creative solutions to solve them. For example, we originally wanted our trigger to keep track of the mutual number of liked artists, genres, and songs that a pair of users had in common. However, this original trigger design was unfeasible because it required multiple events to be triggered by, and was overall fairly complicated, which we found difficult to implement. However, this led to our choice to make the triggers keep track of “initiative”, where a user liking another user first marks that relationship as having initiative, which led to the additional feature in the frontend that we wouldn’t have thought of otherwise. As a result, while the application didn’t follow along perfectly with our original plan, it still worked out successfully and made us think outside the box.
+
+The division of labor between our group members came naturally, as we all had different strengths. Owen focused primarily on the database schema and helped all our members the most with providing advanced queries and performing index analysis. Aliva and Urvi focused on designin the stored procedure and trigger, which became key components of the final application. Renzo focused on frontend design and web application problems, creating most of the user interface and linking it up with the database and backend provided by the other three members.
+
+While Tunify isn’t necessarily a traditional solution to solving a lack of social interaction, it addresses it in a unique and relevant way. Developing it was a wonderful learning process, and we hope that in the future we can incorporate additional features that we weren’t able to get to during the semester.
